@@ -1,6 +1,42 @@
 @Falck.Api_HostAddress = http://localhost:5229
 
-GET {{Falck.Api_HostAddress}}/weatherforecast/
+### List all employees
+GET {{Falck.Api_HostAddress}}/api/employees
 Accept: application/json
 
-###
+### Get employee detail (history + projects)
+GET {{Falck.Api_HostAddress}}/api/employees/1
+Accept: application/json
+
+### Create an employee
+POST {{Falck.Api_HostAddress}}/api/employees
+Content-Type: application/json
+
+{
+  "name": "Pedro Salazar",
+  "currentPosition": "Developer",
+  "salary": 4500,
+  "departmentId": 1
+}
+
+### Update an employee (promotion: position change updates the history)
+PUT {{Falck.Api_HostAddress}}/api/employees/2
+Content-Type: application/json
+
+{
+  "name": "Carlos Pérez",
+  "currentPosition": "Manager",
+  "salary": 7000,
+  "departmentId": 1
+}
+
+### Delete an employee
+DELETE {{Falck.Api_HostAddress}}/api/employees/5
+
+### List departments
+GET {{Falck.Api_HostAddress}}/api/departments
+Accept: application/json
+
+### Section 4.3: employees of a department with at least one project
+GET {{Falck.Api_HostAddress}}/api/departments/1/employees-with-projects
+Accept: application/json
