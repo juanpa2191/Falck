@@ -24,6 +24,10 @@ public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
         builder.Property(e => e.Salary)
             .HasPrecision(18, 2);
 
+        // SQL Server rowversion → optimistic concurrency on updates/deletes.
+        builder.Property(e => e.RowVersion)
+            .IsRowVersion();
+
         builder.HasOne(e => e.Department)
             .WithMany(d => d.Employees)
             .HasForeignKey(e => e.DepartmentId)

@@ -25,9 +25,20 @@ public class ExceptionHandlingMiddleware(
         {
             await WriteProblemAsync(context, StatusCodes.Status400BadRequest, "Invalid request", ex.Message);
         }
+        catch (ConflictException ex)
+        {
+            await WriteProblemAsync(context, StatusCodes.Status409Conflict, "Conflict", ex.Message);
+        }
         catch (UnauthorizedException ex)
         {
             await WriteProblemAsync(context, StatusCodes.Status401Unauthorized, "Unauthorized", ex.Message);
+        }
+        catch (OperationCanceledException) when (context.RequestAborted.IsCancellationRequested)
+        {
+            // The client disconnected mid-request; this is expected, not an error.
+            // Nothing to write to a connection that is already gone.
+            logger.LogInformation("Request {Method} {Path} was cancelled by the client.",
+                context.Request.Method, context.Request.Path);
         }
         catch (Exception ex)
         {

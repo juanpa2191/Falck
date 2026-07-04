@@ -49,8 +49,10 @@ public record CreateEmployeeRequest
 }
 
 /// <summary>
-/// Payload for PUT /api/employees/{id}. Changing <see cref="CurrentPosition"/>
-/// automatically records the change in the employee's position history.
+/// Payload for PUT /api/employees/{id}. Kept as a standalone record (parallel to
+/// <see cref="CreateEmployeeRequest"/>) so the two request bodies can evolve
+/// independently. Changing <see cref="CurrentPosition"/> automatically records
+/// the change in the employee's position history.
 /// </summary>
 public record UpdateEmployeeRequest
 {

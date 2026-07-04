@@ -123,6 +123,11 @@ CREATE UNIQUE INDEX [IX_Users_Username] ON [Users] ([Username]);
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
 VALUES (N'20260704050231_AddUsers', N'9.0.17');
 
+ALTER TABLE [Employees] ADD [RowVersion] rowversion NULL;
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20260704230640_AddEmployeeRowVersion', N'9.0.17');
+
 COMMIT;
 GO
 

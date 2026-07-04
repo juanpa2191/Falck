@@ -1,3 +1,4 @@
+using Falck.Application.Common.Exceptions;
 using Falck.Application.Interfaces;
 using Falck.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +18,18 @@ public class UserRepository(FalckDbContext context) : IUserRepository
     public async Task<User> AddAsync(User user, CancellationToken cancellationToken = default)
     {
         context.Users.Add(user);
-        await context.SaveChangesAsync(cancellationToken);
+
+        try
+        {
+            await context.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException)
+        {
+            // Two concurrent registrations for the same username can both pass
+            // the prior existence check; the unique index then rejects the loser.
+            throw new ConflictException($"Username '{user.Username}' is already taken.");
+        }
+
         return user;
     }
 }

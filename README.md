@@ -56,7 +56,7 @@ dotnet test
 
 | Method | Route                                          | Roles       | Description |
 |--------|------------------------------------------------|-------------|-------------|
-| POST   | `/api/auth/register`                           | anonymous   | Create an account, returns a JWT |
+| POST   | `/api/auth/register`                           | anonymous   | Create a read-only User account, returns a JWT |
 | POST   | `/api/auth/login`                              | anonymous   | Authenticate, returns a JWT with the role claim |
 | GET    | `/api/employees`                               | Admin, User | List employees (with computed yearly bonus) |
 | GET    | `/api/employees/{id}`                          | Admin, User | Employee detail: position history + projects |
@@ -177,6 +177,16 @@ exactly the section 3.2 matrix: Admin = full access, User = GET only. For finer
 rules the same mechanism scales to policy-based authorization
 (`AddAuthorization(options => options.AddPolicy(...))`) with custom
 requirements/handlers.
+
+**Hardening applied**: self-registration always creates a read-only `User`
+account (the role is never client-supplied, so an anonymous caller cannot grant
+itself Admin — Admin accounts are seeded or promoted by an existing admin); the
+`/api/auth` endpoints are rate-limited (fixed window, 5 requests / 30 s) to blunt
+brute-force and username enumeration; the login path runs a constant-time decoy
+hash on unknown usernames so response timing does not reveal which accounts
+exist; and startup fails fast in Production if `Jwt:Key` is missing, too short
+for HMAC-SHA256, or still the committed development placeholder (supply it via
+user-secrets or the `Jwt__Key` environment variable).
 
 ### 2.3 — Middleware concept
 

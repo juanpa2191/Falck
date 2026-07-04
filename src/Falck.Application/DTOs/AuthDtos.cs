@@ -1,9 +1,13 @@
 using System.ComponentModel.DataAnnotations;
-using Falck.Domain.Entities;
 
 namespace Falck.Application.DTOs;
 
-/// <summary>Payload for POST /api/auth/register.</summary>
+/// <summary>
+/// Payload for POST /api/auth/register. Self-registration always creates a
+/// read-only User account; there is deliberately no client-supplied role, so
+/// an anonymous caller cannot grant itself Admin. Admin accounts are seeded
+/// (see DbSeeder) or would be promoted by an existing admin in production.
+/// </summary>
 public record RegisterRequest
 {
     [Required, StringLength(50, MinimumLength = 3)]
@@ -11,15 +15,6 @@ public record RegisterRequest
 
     [Required, StringLength(100, MinimumLength = 8)]
     public string Password { get; init; } = string.Empty;
-
-    /// <summary>
-    /// "Admin" or "User". Defaults to "User". Exposed only so the technical
-    /// test can be exercised end to end; in production role assignment would
-    /// be an admin-only operation.
-    /// </summary>
-    [RegularExpression($"^({Roles.Admin}|{Roles.User})$",
-        ErrorMessage = "Role must be 'Admin' or 'User'.")]
-    public string Role { get; init; } = Roles.User;
 }
 
 /// <summary>Payload for POST /api/auth/login.</summary>

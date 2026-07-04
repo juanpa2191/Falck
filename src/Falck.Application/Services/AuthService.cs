@@ -21,7 +21,8 @@ public class AuthService(
         {
             Username = request.Username,
             PasswordHash = passwordHasher.Hash(request.Password),
-            Role = request.Role
+            // Self-registration is always a read-only account; never client-driven.
+            Role = Roles.User
         };
 
         await users.AddAsync(user, cancellationToken);
@@ -34,8 +35,16 @@ public class AuthService(
     {
         var user = await users.GetByUsernameAsync(request.Username, cancellationToken);
 
-        // Same error either way: don't leak which credential failed.
-        if (user is null || !passwordHasher.Verify(request.Password, user.PasswordHash))
+        if (user is null)
+        {
+            // Run a decoy hash comparison so response time does not reveal
+            // whether the username exists (mitigates user enumeration).
+            passwordHasher.VerifyDecoy(request.Password);
+            throw new UnauthorizedException("Invalid username or password.");
+        }
+
+        // Same generic error either way: don't leak which credential failed.
+        if (!passwordHasher.Verify(request.Password, user.PasswordHash))
             throw new UnauthorizedException("Invalid username or password.");
 
         return BuildResponse(user);

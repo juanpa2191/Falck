@@ -17,18 +17,19 @@ public class AuthServiceTests
     }
 
     [Fact]
-    public async Task Register_NewUsername_StoresHashedPasswordAndReturnsToken()
+    public async Task Register_NewUsername_StoresHashedPasswordAsUserRole()
     {
         var response = await _service.RegisterAsync(new RegisterRequest
         {
             Username = "ada",
-            Password = "Sup3rSecret!",
-            Role = Roles.Admin
+            Password = "Sup3rSecret!"
         });
 
         Assert.Equal("token-for-ada", response.Token);
-        Assert.Equal(Roles.Admin, response.Role);
+        // Self-registration must never grant Admin, regardless of any input.
+        Assert.Equal(Roles.User, response.Role);
         var stored = Assert.Single(_users.Users);
+        Assert.Equal(Roles.User, stored.Role);
         Assert.Equal("hashed:Sup3rSecret!", stored.PasswordHash);
     }
 
@@ -95,6 +96,8 @@ public class AuthServiceTests
 
         public bool Verify(string password, string passwordHash) =>
             passwordHash == $"hashed:{password}";
+
+        public bool VerifyDecoy(string password) => false;
     }
 
     private sealed class FakeTokenGenerator : IJwtTokenGenerator

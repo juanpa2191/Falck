@@ -34,6 +34,13 @@ public class Employee
     public List<Project> Projects { get; set; } = [];
 
     /// <summary>
+    /// Optimistic-concurrency token (SQL Server rowversion). Lets concurrent
+    /// updates/deletes of the same employee fail cleanly instead of silently
+    /// producing a divergent position history or a lost update.
+    /// </summary>
+    public byte[]? RowVersion { get; set; }
+
+    /// <summary>
     /// Calculates the yearly bonus based on the salary and the current
     /// position: the factory picks the policy for the position (10% regular,
     /// 20% for any type of manager) and the strategy applies it.

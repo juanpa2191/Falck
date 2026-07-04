@@ -18,14 +18,13 @@ Content-Type: application/json
   "password": "User123!"
 }
 
-### Register a new account
+### Register a new account (always created as a read-only User)
 POST {{Falck.Api_HostAddress}}/api/auth/register
 Content-Type: application/json
 
 {
   "username": "newuser",
-  "password": "NewUser123!",
-  "role": "User"
+  "password": "NewUser123!"
 }
 
 @token = PASTE_TOKEN_HERE
