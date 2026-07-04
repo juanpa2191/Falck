@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Coverage settings for "dotnet test" with the XPlat Code Coverage collector.
+  Excludes EF Core generated migrations so the reported number reflects
+  hand-written code only.
+-->
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat code coverage">
+        <Configuration>
+          <ExcludeByFile>**/Persistence/Migrations/*.cs</ExcludeByFile>
+          <Exclude>[*]Falck.Infrastructure.Persistence.Migrations.*</Exclude>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>

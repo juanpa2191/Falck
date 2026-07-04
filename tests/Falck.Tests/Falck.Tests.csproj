@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Falck.Domain\Falck.Domain.csproj" />
     <ProjectReference Include="..\..\src\Falck.Application\Falck.Application.csproj" />
+    <ProjectReference Include="..\..\src\Falck.Infrastructure\Falck.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
