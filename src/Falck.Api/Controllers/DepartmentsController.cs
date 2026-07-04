@@ -1,12 +1,18 @@
 using Falck.Application.DTOs;
 using Falck.Application.Services;
+using Falck.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Falck.Api.Controllers;
 
-/// <summary>Departments read endpoints, including the section 4.3 query.</summary>
+/// <summary>
+/// Departments read endpoints, including the section 4.3 query. Read-only, so
+/// both roles may call them.
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(Roles = $"{Roles.Admin},{Roles.User}")]
 public class DepartmentsController(
     IDepartmentService departmentService,
     IEmployeeService employeeService) : ControllerBase

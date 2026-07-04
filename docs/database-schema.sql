@@ -110,6 +110,19 @@ CREATE INDEX [IX_PositionHistories_EmployeeId_StartDate] ON [PositionHistories] 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
 VALUES (N'20260704043945_InitialCreate', N'9.0.17');
 
+CREATE TABLE [Users] (
+    [Id] int NOT NULL IDENTITY,
+    [Username] nvarchar(50) NOT NULL,
+    [PasswordHash] nvarchar(200) NOT NULL,
+    [Role] nvarchar(20) NOT NULL,
+    CONSTRAINT [PK_Users] PRIMARY KEY ([Id])
+);
+
+CREATE UNIQUE INDEX [IX_Users_Username] ON [Users] ([Username]);
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20260704050231_AddUsers', N'9.0.17');
+
 COMMIT;
 GO
 

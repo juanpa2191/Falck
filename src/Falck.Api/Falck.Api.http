@@ -1,15 +1,48 @@
 @Falck.Api_HostAddress = http://localhost:5229
 
-### List all employees
+### Login as seeded admin (full access) — copy the token into @token below
+POST {{Falck.Api_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "Admin123!"
+}
+
+### Login as seeded read-only user (GET only)
+POST {{Falck.Api_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "user",
+  "password": "User123!"
+}
+
+### Register a new account
+POST {{Falck.Api_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "newuser",
+  "password": "NewUser123!",
+  "role": "User"
+}
+
+@token = PASTE_TOKEN_HERE
+
+### List all employees (Admin or User)
 GET {{Falck.Api_HostAddress}}/api/employees
+Authorization: Bearer {{token}}
 Accept: application/json
 
-### Get employee detail (history + projects)
+### Get employee detail (history + projects) (Admin or User)
 GET {{Falck.Api_HostAddress}}/api/employees/1
+Authorization: Bearer {{token}}
 Accept: application/json
 
-### Create an employee
+### Create an employee (Admin only)
 POST {{Falck.Api_HostAddress}}/api/employees
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -19,8 +52,9 @@ Content-Type: application/json
   "departmentId": 1
 }
 
-### Update an employee (promotion: position change updates the history)
+### Update an employee (promotion: position change updates the history) (Admin only)
 PUT {{Falck.Api_HostAddress}}/api/employees/2
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -30,13 +64,16 @@ Content-Type: application/json
   "departmentId": 1
 }
 
-### Delete an employee
+### Delete an employee (Admin only)
 DELETE {{Falck.Api_HostAddress}}/api/employees/5
+Authorization: Bearer {{token}}
 
-### List departments
+### List departments (Admin or User)
 GET {{Falck.Api_HostAddress}}/api/departments
+Authorization: Bearer {{token}}
 Accept: application/json
 
-### Section 4.3: employees of a department with at least one project
+### Section 4.3: employees of a department with at least one project (Admin or User)
 GET {{Falck.Api_HostAddress}}/api/departments/1/employees-with-projects
+Authorization: Bearer {{token}}
 Accept: application/json

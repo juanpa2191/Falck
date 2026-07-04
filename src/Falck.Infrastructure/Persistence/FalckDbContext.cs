@@ -13,6 +13,7 @@ public class FalckDbContext(DbContextOptions<FalckDbContext> options) : DbContex
     public DbSet<Department> Departments => Set<Department>();
     public DbSet<Project> Projects => Set<Project>();
     public DbSet<PositionHistory> PositionHistories => Set<PositionHistory>();
+    public DbSet<User> Users => Set<User>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -25,6 +25,10 @@ public class ExceptionHandlingMiddleware(
         {
             await WriteProblemAsync(context, StatusCodes.Status400BadRequest, "Invalid request", ex.Message);
         }
+        catch (UnauthorizedException ex)
+        {
+            await WriteProblemAsync(context, StatusCodes.Status401Unauthorized, "Unauthorized", ex.Message);
+        }
         catch (Exception ex)
         {
             logger.LogError(ex, "Unhandled exception processing {Method} {Path}",

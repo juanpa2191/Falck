@@ -11,6 +11,7 @@ public static class DependencyInjection
     {
         services.AddScoped<IEmployeeService, EmployeeService>();
         services.AddScoped<IDepartmentService, DepartmentService>();
+        services.AddScoped<IAuthService, AuthService>();
 
         // Stateless, so a single instance can serve every request.
         services.AddSingleton<IBonusStrategyFactory, BonusStrategyFactory>();
