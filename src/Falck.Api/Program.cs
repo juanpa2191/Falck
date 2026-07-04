@@ -89,7 +89,10 @@ using (var scope = app.Services.CreateScope())
     await DbSeeder.SeedAsync(dbContext, passwordHasher);
 }
 
-// Outermost custom middleware: catches exceptions from everything below.
+// Custom middleware, outermost first: logging wraps everything (so it records
+// the final status code and total time), then exception handling converts
+// errors from the rest of the pipeline into ProblemDetails.
+app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
