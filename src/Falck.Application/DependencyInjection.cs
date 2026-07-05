@@ -1,5 +1,4 @@
 using Falck.Application.Services;
-using Falck.Domain.Strategies;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Falck.Application;
@@ -13,8 +12,9 @@ public static class DependencyInjection
         services.AddScoped<IDepartmentService, DepartmentService>();
         services.AddScoped<IAuthService, AuthService>();
 
-        // Sin estado, así que una sola instancia puede atender todas las peticiones.
-        services.AddSingleton<IBonusStrategyFactory, BonusStrategyFactory>();
+        // Registra IMapper y descubre todos los Profile de este ensamblado
+        // (EmployeeMappingProfile, DepartmentMappingProfile).
+        services.AddAutoMapper(typeof(DependencyInjection).Assembly);
 
         return services;
     }

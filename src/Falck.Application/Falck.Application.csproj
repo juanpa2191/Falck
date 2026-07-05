@@ -5,7 +5,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="14.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--
+      GHSA-rvv3-g6hj-g44x (DoS en AutoMapper) solo se corrige en 15.1.1+, versiones
+      que ya requieren licencia comercial (clave JWT) y no encajan en una prueba
+      técnica. Aceptamos el riesgo de forma consciente y acotada: el mapeo opera
+      sobre tipos internos fijos, sin recursión ni entradas controladas por el
+      usuario, por lo que el vector de DoS no aplica. Suprimimos SOLO este advisory
+      (no la auditoría completa) para dejar rastro de la decisión.
+    -->
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-rvv3-g6hj-g44x" />
   </ItemGroup>
 
   <PropertyGroup>

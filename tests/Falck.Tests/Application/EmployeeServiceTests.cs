@@ -4,7 +4,7 @@ using Falck.Application.Interfaces;
 using Falck.Application.Services;
 using Falck.Domain.Entities;
 using Falck.Domain.Enums;
-using Falck.Domain.Strategies;
+using Falck.Tests.TestHelpers;
 
 namespace Falck.Tests.Application;
 
@@ -16,7 +16,7 @@ public class EmployeeServiceTests
 
     public EmployeeServiceTests()
     {
-        _service = new EmployeeService(_employees, _departments, new BonusStrategyFactory());
+        _service = new EmployeeService(_employees, _departments, TestMapper.Create());
     }
 
     private Employee SeedEmployee(

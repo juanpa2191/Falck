@@ -1,9 +1,8 @@
+using AutoMapper;
 using Falck.Application.Common.Exceptions;
 using Falck.Application.DTOs;
 using Falck.Application.Interfaces;
-using Falck.Application.Mappings;
 using Falck.Domain.Entities;
-using Falck.Domain.Strategies;
 
 namespace Falck.Application.Services;
 
@@ -11,12 +10,12 @@ namespace Falck.Application.Services;
 public class EmployeeService(
     IEmployeeRepository employees,
     IDepartmentRepository departments,
-    IBonusStrategyFactory bonusStrategyFactory) : IEmployeeService
+    IMapper mapper) : IEmployeeService
 {
     public async Task<List<EmployeeDto>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         var all = await employees.GetAllAsync(cancellationToken);
-        return all.Select(e => e.ToDto(e.CalculateYearlyBonus(bonusStrategyFactory))).ToList();
+        return mapper.Map<List<EmployeeDto>>(all);
     }
 
     public async Task<EmployeeDetailDto> GetByIdAsync(int id, CancellationToken cancellationToken = default)
@@ -24,7 +23,7 @@ public class EmployeeService(
         var employee = await employees.GetByIdAsync(id, cancellationToken)
             ?? throw new NotFoundException(nameof(Employee), id);
 
-        return employee.ToDetailDto(employee.CalculateYearlyBonus(bonusStrategyFactory));
+        return mapper.Map<EmployeeDetailDto>(employee);
     }
 
     public async Task<EmployeeDetailDto> CreateAsync(
@@ -85,7 +84,7 @@ public class EmployeeService(
             throw new NotFoundException(nameof(Department), departmentId);
 
         var result = await employees.GetByDepartmentWithProjectsAsync(departmentId, cancellationToken);
-        return result.Select(e => e.ToDto(e.CalculateYearlyBonus(bonusStrategyFactory))).ToList();
+        return mapper.Map<List<EmployeeDto>>(result);
     }
 
     private async Task EnsureDepartmentExists(int departmentId, CancellationToken cancellationToken)

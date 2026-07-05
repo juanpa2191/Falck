@@ -10,7 +10,8 @@ con JWT y autorización basada en roles.
 - Entity Framework Core 9 + SQL Server LocalDB
 - Autenticación JWT Bearer, hashing de contraseñas con BCrypt
 - Swagger (Swashbuckle) con soporte Bearer
-- xUnit (46 pruebas unitarias)
+- AutoMapper (perfiles separados por agregado) para el mapeo entidad → DTO
+- xUnit (51 pruebas unitarias)
 - Docker / docker-compose; CI/CD con GitHub Actions publicando en GHCR
 
 ## Puesta en marcha
@@ -187,8 +188,15 @@ implementaciones viven en Infrastructure.
 - **Usuarios de demo sembrados al arrancar (`DbSeeder`), no vía `HasData`** —
   BCrypt emite un hash distinto por ejecución, lo que ensuciaría toda migración
   futura.
-- **Mapeo manual de DTOs en lugar de AutoMapper** — la superficie es pequeña; el
-  mapeo explícito mantiene la seguridad en tiempo de compilación.
+- **AutoMapper con un perfil por agregado** — el mapeo entidad → DTO vive en
+  `EmployeeMappingProfile` y `DepartmentMappingProfile` (separados para respetar
+  Responsabilidad Única); se registran con `AddAutoMapper` y los servicios
+  dependen de `IMapper`. El bono anual sigue siendo lógica de dominio
+  (`Employee.CalculateYearlyBonus` con la Strategy/Factory), invocada desde el
+  perfil. Nota de seguridad: se fija AutoMapper 14 (última bajo licencia libre) y
+  se suprime **solo** el advisory GHSA-rvv3-g6hj-g44x vía `NuGetAuditSuppress`
+  —su parche está únicamente en las versiones comerciales 15.1.1+— porque el
+  mapeo opera sobre tipos internos fijos, sin el vector de DoS reportado.
 - **`nuget.config` local al repo** fijando nuget.org para que la solución se
   restaure de forma idéntica en cualquier máquina.
 
@@ -330,7 +338,7 @@ HTTP GET /api/employees/999 from 127.0.0.1 as 'admin' => 404 in 108 ms
 │   ├── Falck.Infrastructure/    # EF Core, migraciones, repositorios, BCrypt, JWT
 │   └── Falck.Api/               # Controladores, middleware, DI, Swagger
 ├── tests/
-│   └── Falck.Tests/             # 46 pruebas unitarias (dominio + servicios + infra)
+│   └── Falck.Tests/             # 51 pruebas unitarias (dominio + servicios + mapeo + infra)
 └── docs/
     └── database-schema.sql      # DDL completo exportado desde las migraciones
 ```
