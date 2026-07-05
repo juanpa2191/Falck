@@ -1,10 +1,10 @@
-name: CI/CD
+name: Integración y Entrega Continua (CI/CD)
 
 # Un solo pipeline con compuerta (gate): primero corre las pruebas y solo si
 # pasan se construye/publica la imagen Docker.
-#  - pull_request  -> tests + build de imagen SIN push (valida el Dockerfile).
-#  - push a main    -> tests -> si verde, build + push a GHCR (:latest, :sha-<corto>).
-#  - tag v*.*.*     -> tests -> si verde, build + push a GHCR (:vX.Y.Z).
+#  - pull_request  -> pruebas + build de imagen SIN push (valida el Dockerfile).
+#  - push a main    -> pruebas -> si verde, build + push a GHCR (:latest, :sha-<corto>).
+#  - tag v*.*.*     -> pruebas -> si verde, build + push a GHCR (:vX.Y.Z).
 on:
   push:
     branches: [main]
@@ -24,31 +24,32 @@ env:
 
 jobs:
   test:
+    name: Pruebas
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Clonar el repositorio
         uses: actions/checkout@v7
 
-      - name: Setup .NET 9
+      - name: Instalar .NET 9
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: "9.0.x"
 
       # Cachea los paquetes NuGet usando los archivos de proyecto como clave.
-      - name: Cache NuGet packages
+      - name: Cachear paquetes NuGet
         uses: actions/cache@v6
         with:
           path: ~/.nuget/packages
           key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj', 'nuget.config') }}
           restore-keys: nuget-${{ runner.os }}-
 
-      - name: Restore
+      - name: Restaurar dependencias
         run: dotnet restore Falck.sln
 
-      - name: Build (Release, warnings as errors)
+      - name: Compilar (Release, warnings como errores)
         run: dotnet build Falck.sln -c Release --no-restore -warnaserror
 
-      - name: Test with coverage
+      - name: Ejecutar pruebas con cobertura
         run: >
           dotnet test Falck.sln
           -c Release
@@ -57,7 +58,7 @@ jobs:
           --collect:"XPlat Code Coverage"
           --settings coverlet.runsettings
 
-      - name: Upload test results
+      - name: Subir resultados de pruebas
         if: always()
         uses: actions/upload-artifact@v7
         with:
@@ -68,6 +69,7 @@ jobs:
           if-no-files-found: ignore
 
   build-image:
+    name: Construir imagen
     # Compuerta: solo se ejecuta si el job de pruebas terminó en verde.
     needs: test
     runs-on: ubuntu-latest
@@ -75,14 +77,14 @@ jobs:
       contents: read
       packages: write        # necesario para publicar en GHCR con GITHUB_TOKEN
     steps:
-      - name: Checkout
+      - name: Clonar el repositorio
         uses: actions/checkout@v7
 
-      - name: Set up Docker Buildx
+      - name: Configurar Docker Buildx
         uses: docker/setup-buildx-action@v4
 
       # Login (y por tanto push) solo fuera de los pull requests.
-      - name: Log in to GHCR
+      - name: Autenticar en GHCR
         if: github.event_name != 'pull_request'
         uses: docker/login-action@v4
         with:
@@ -91,7 +93,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # Deriva tags/labels: :latest para main, :sha-<corto> siempre, :vX.Y.Z en tags.
-      - name: Extract metadata
+      - name: Extraer metadata (tags y labels)
         id: meta
         uses: docker/metadata-action@v6
         with:
@@ -104,7 +106,7 @@ jobs:
 
       # En pull_request construye la imagen para validar el Dockerfile (push=false);
       # en push a main/tags la publica en GHCR (push=true).
-      - name: Build and (conditionally) push
+      - name: Construir y (condicionalmente) publicar
         uses: docker/build-push-action@v7
         with:
           context: .

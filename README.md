@@ -84,17 +84,21 @@ dotnet test --settings coverlet.runsettings --collect:"XPlat Code Coverage"
 
 ## Integración y entrega continua (CI/CD)
 
-Hay dos workflows de GitHub Actions en `.github/workflows/`:
+Un único pipeline con **compuerta** en `.github/workflows/ci-cd.yml`, con dos
+jobs encadenados: primero se prueban los cambios y **solo si pasan** se construye
+o publica la imagen Docker (el job `build-image` declara `needs: test`).
 
-- **CI** (`ci.yml`) — se ejecuta en cada push a `main` y en cada pull request.
-  Restaura, compila en Release con `-warnaserror` y corre toda la suite de
-  pruebas con cobertura, subiendo los resultados como artefacto de build. Un
-  build en rojo bloquea el merge.
-- **CD** (`cd.yml`) — se ejecuta al hacer push a `main`, en tags `v*.*.*` o de
-  forma manual. Construye el `Dockerfile` y publica la imagen en **GitHub
-  Container Registry** (`ghcr.io/<owner>/falck`), etiquetándola como `:latest`,
-  `:sha-<corto>` y, en releases, `:vX.Y.Z`. Se autentica con el `GITHUB_TOKEN`
-  integrado, así que no se necesitan secretos adicionales para publicar.
+| Disparador | Job `test` | Job `build-image` |
+|---|---|---|
+| **Pull request → `main`** | restaura, compila en Release con `-warnaserror` y corre las 51 pruebas con cobertura | construye la imagen **sin push** (valida el `Dockerfile`) |
+| **Push a `main`** | igual | solo si `test` pasa → **publica** en GHCR `:latest` y `:sha-<corto>` |
+| **Tag `v*.*.*`** | igual | solo si `test` pasa → **publica** en GHCR `:vX.Y.Z` |
+
+Así `:latest` y los tags **siempre** corresponden a un commit que pasó las
+pruebas; una regresión que compila pero rompe un test no llega al registro. En
+los pull requests se valida que la imagen se construya, pero no se publica nada.
+Se autentica con el `GITHUB_TOKEN` integrado, así que no se necesitan secretos
+adicionales para publicar.
 
 Descargar y ejecutar la imagen publicada (una vez que el workflow haya corrido
 al menos una vez y el paquete se haya hecho público, o tras `docker login
@@ -104,7 +108,7 @@ ghcr.io`):
 docker pull ghcr.io/<owner>/falck:latest
 ```
 
-El job de CD produce un artefacto desplegable; apuntarlo a un host real (Azure
+El pipeline produce un artefacto desplegable; apuntarlo a un host real (Azure
 Web App for Containers, AWS ECS, una VM, etc.) es cuestión de añadir un paso de
 despliegue con las credenciales de esa plataforma como secretos del repositorio.
 
