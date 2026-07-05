@@ -10,7 +10,8 @@ role-based authorization.
 - Entity Framework Core 9 + SQL Server LocalDB
 - JWT Bearer authentication, BCrypt password hashing
 - Swagger (Swashbuckle) with Bearer support
-- xUnit (25 unit tests)
+- xUnit (46 unit tests)
+- Docker / docker-compose; GitHub Actions CI/CD publishing to GHCR
 
 ## Getting started
 
@@ -76,6 +77,31 @@ Coverage (hand-written code, excluding generated migrations):
 ```bash
 dotnet test --settings coverlet.runsettings --collect:"XPlat Code Coverage"
 ```
+
+## Continuous integration & delivery
+
+Two GitHub Actions workflows live in `.github/workflows/`:
+
+- **CI** (`ci.yml`) — runs on every push to `main` and every pull request. It
+  restores, builds in Release with `-warnaserror`, and runs the full test suite
+  with coverage, uploading the results as a build artifact. A red build blocks
+  the merge.
+- **CD** (`cd.yml`) — runs on push to `main`, on `v*.*.*` tags, or manually. It
+  builds the `Dockerfile` and pushes the image to **GitHub Container Registry**
+  (`ghcr.io/<owner>/falck`), tagging it `:latest`, `:sha-<short>` and, for
+  releases, `:vX.Y.Z`. It authenticates with the built-in `GITHUB_TOKEN`, so no
+  extra secrets are needed to publish.
+
+Pull and run the published image (once the workflow has run at least once and the
+package is made public, or after `docker login ghcr.io`):
+
+```bash
+docker pull ghcr.io/<owner>/falck:latest
+```
+
+The CD job produces a deployable artifact; pointing it at a real host (Azure Web
+App for Containers, AWS ECS, a VM, etc.) is a matter of adding a deploy step with
+that platform's credentials as repository secrets.
 
 ## Endpoints
 
