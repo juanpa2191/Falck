@@ -11,7 +11,9 @@ namespace Falck.Tests.Application;
 public class EmployeeServiceTests
 {
     private readonly FakeEmployeeRepository _employees = new();
-    private readonly FakeDepartmentRepository _departments = new([1, 2]);
+    private readonly FakeDepartmentRepository _departments = new(
+        new Department { Id = 1, Name = "Engineering" },
+        new Department { Id = 2, Name = "Human Resources" });
     private readonly EmployeeService _service;
 
     public EmployeeServiceTests()
@@ -198,7 +200,7 @@ public class EmployeeServiceTests
     public async Task GetByDepartmentWithProjectsAsync_KnownDepartment_ReturnsMappedDtos()
     {
         SeedEmployee(id: 1, position: PositionType.Manager, salary: 9000m);
-        _employees.ByDepartmentWithProjects = _employees.Items.ToList();
+        _employees.ByDepartmentWithProjects = [.. _employees.Items];
 
         var result = await _service.GetByDepartmentWithProjectsAsync(1);
 
@@ -242,14 +244,5 @@ public class EmployeeServiceTests
 
         public Task<List<Employee>> GetByDepartmentWithProjectsAsync(int departmentId, CancellationToken ct = default) =>
             Task.FromResult(ByDepartmentWithProjects);
-    }
-
-    private sealed class FakeDepartmentRepository(int[] existingIds) : IDepartmentRepository
-    {
-        public Task<bool> ExistsAsync(int id, CancellationToken ct = default) =>
-            Task.FromResult(existingIds.Contains(id));
-
-        public Task<List<Department>> GetAllAsync(CancellationToken ct = default) =>
-            Task.FromResult(existingIds.Select(id => new Department { Id = id, Name = $"Dept {id}" }).ToList());
     }
 }
