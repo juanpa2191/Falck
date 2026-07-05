@@ -1,200 +1,207 @@
-# Falck — Employee Management API
+# Falck — API de Gestión de Empleados
 
-Technical test for .NET Backend Developer. ASP.NET Core 9 Web API for managing
-employees, departments, projects and position history, secured with JWT and
-role-based authorization.
+Prueba técnica para Desarrollador Backend .NET. API web ASP.NET Core 9 para
+gestionar empleados, departamentos, proyectos e historial de cargos, protegida
+con JWT y autorización basada en roles.
 
-## Tech stack
+## Stack tecnológico
 
-- .NET 9 / ASP.NET Core Web API (controllers)
+- .NET 9 / ASP.NET Core Web API (controladores)
 - Entity Framework Core 9 + SQL Server LocalDB
-- JWT Bearer authentication, BCrypt password hashing
-- Swagger (Swashbuckle) with Bearer support
-- xUnit (46 unit tests)
-- Docker / docker-compose; GitHub Actions CI/CD publishing to GHCR
+- Autenticación JWT Bearer, hashing de contraseñas con BCrypt
+- Swagger (Swashbuckle) con soporte Bearer
+- xUnit (46 pruebas unitarias)
+- Docker / docker-compose; CI/CD con GitHub Actions publicando en GHCR
 
-## Getting started
+## Puesta en marcha
 
-### Prerequisites
+### Requisitos previos
 
 - [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
-- SQL Server LocalDB (ships with Visual Studio; verify with `sqllocaldb info`).
-  To use another SQL Server instance, change `ConnectionStrings:DefaultConnection`
-  in `src/Falck.Api/appsettings.json`.
+- SQL Server LocalDB (viene con Visual Studio; verifícalo con `sqllocaldb info`).
+  Para usar otra instancia de SQL Server, cambia
+  `ConnectionStrings:DefaultConnection` en `src/Falck.Api/appsettings.json`.
 
-### Run
+### Ejecutar
 
 ```bash
-git clone <this-repo>
+git clone <este-repo>
 cd Falck
 dotnet run --project src/Falck.Api --launch-profile http
 ```
 
-That is all: on startup the API applies the EF Core migrations, creates the
-`FalckEmployeesDb` database and seeds demo data (departments, projects,
-employees with position history, and two demo accounts).
+Eso es todo: al arrancar, la API aplica las migraciones de EF Core, crea la base
+de datos `FalckEmployeesDb` y siembra datos de demostración (departamentos,
+proyectos, empleados con historial de cargos y dos cuentas de demo).
 
-Open **http://localhost:5229/swagger** to explore the API.
+Abre **http://localhost:5229/swagger** para explorar la API.
 
-### Demo accounts
+### Cuentas de demostración
 
-| Username | Password    | Role  | Access                              |
-|----------|-------------|-------|-------------------------------------|
-| `admin`  | `Admin123!` | Admin | All employees endpoints             |
-| `user`   | `User123!`  | User  | Only GET on the employees endpoints |
+| Usuario  | Contraseña  | Rol   | Acceso                                    |
+|----------|-------------|-------|-------------------------------------------|
+| `admin`  | `Admin123!` | Admin | Todos los endpoints de empleados          |
+| `user`   | `User123!`  | User  | Solo GET en los endpoints de empleados    |
 
-Login via `POST /api/auth/login`, copy the `token` from the response and use
-the **Authorize** button in Swagger (or an `Authorization: Bearer <token>`
-header). `src/Falck.Api/Falck.Api.http` contains ready-made sample requests.
+Inicia sesión con `POST /api/auth/login`, copia el `token` de la respuesta y
+úsalo con el botón **Authorize** en Swagger (o con la cabecera
+`Authorization: Bearer <token>`). El archivo `src/Falck.Api/Falck.Api.http`
+contiene peticiones de ejemplo listas para usar.
 
-### Run with Docker (no local SQL Server needed)
+### Ejecutar con Docker (sin SQL Server local)
 
-The `dotnet run` path above targets SQL Server **LocalDB** (Windows only). To run
-anywhere, use Docker Compose, which starts a Linux SQL Server container plus the
-API and wires them together:
+La ruta con `dotnet run` de arriba apunta a SQL Server **LocalDB** (solo
+Windows). Para ejecutar en cualquier entorno, usa Docker Compose, que levanta un
+contenedor de SQL Server para Linux junto a la API y los conecta entre sí:
 
 ```bash
 docker compose up --build
 ```
 
-Then open **http://localhost:8080/swagger**. Compose overrides the connection
-string to point at the `db` service and waits (healthcheck) until SQL Server is
-ready; the API then applies the migrations and seeds the same demo data. Stop
-with `docker compose down` (add `-v` to also drop the database volume).
+Luego abre **http://localhost:8080/swagger**. Compose sobrescribe la cadena de
+conexión para apuntar al servicio `db` y espera (mediante healthcheck) a que SQL
+Server esté listo; la API entonces aplica las migraciones y siembra los mismos
+datos de demo. Para detener: `docker compose down` (añade `-v` para borrar
+también el volumen de la base de datos).
 
-The `Dockerfile` is a multi-stage build (SDK to publish, ASP.NET runtime to run)
-and `Jwt__Key` / connection string are supplied as environment variables — the
-same override mechanism a real deployment would use for secrets.
+El `Dockerfile` es una construcción multi-etapa (SDK para publicar, runtime de
+ASP.NET para ejecutar), y `Jwt__Key` / la cadena de conexión se pasan como
+variables de entorno — el mismo mecanismo de sobrescritura que usaría un
+despliegue real para los secretos.
 
-### Tests
+### Pruebas
 
 ```bash
 dotnet test
 ```
 
-Coverage (hand-written code, excluding generated migrations):
+Cobertura (código escrito a mano, excluyendo las migraciones generadas):
 
 ```bash
 dotnet test --settings coverlet.runsettings --collect:"XPlat Code Coverage"
 ```
 
-## Continuous integration & delivery
+## Integración y entrega continua (CI/CD)
 
-Two GitHub Actions workflows live in `.github/workflows/`:
+Hay dos workflows de GitHub Actions en `.github/workflows/`:
 
-- **CI** (`ci.yml`) — runs on every push to `main` and every pull request. It
-  restores, builds in Release with `-warnaserror`, and runs the full test suite
-  with coverage, uploading the results as a build artifact. A red build blocks
-  the merge.
-- **CD** (`cd.yml`) — runs on push to `main`, on `v*.*.*` tags, or manually. It
-  builds the `Dockerfile` and pushes the image to **GitHub Container Registry**
-  (`ghcr.io/<owner>/falck`), tagging it `:latest`, `:sha-<short>` and, for
-  releases, `:vX.Y.Z`. It authenticates with the built-in `GITHUB_TOKEN`, so no
-  extra secrets are needed to publish.
+- **CI** (`ci.yml`) — se ejecuta en cada push a `main` y en cada pull request.
+  Restaura, compila en Release con `-warnaserror` y corre toda la suite de
+  pruebas con cobertura, subiendo los resultados como artefacto de build. Un
+  build en rojo bloquea el merge.
+- **CD** (`cd.yml`) — se ejecuta al hacer push a `main`, en tags `v*.*.*` o de
+  forma manual. Construye el `Dockerfile` y publica la imagen en **GitHub
+  Container Registry** (`ghcr.io/<owner>/falck`), etiquetándola como `:latest`,
+  `:sha-<corto>` y, en releases, `:vX.Y.Z`. Se autentica con el `GITHUB_TOKEN`
+  integrado, así que no se necesitan secretos adicionales para publicar.
 
-Pull and run the published image (once the workflow has run at least once and the
-package is made public, or after `docker login ghcr.io`):
+Descargar y ejecutar la imagen publicada (una vez que el workflow haya corrido
+al menos una vez y el paquete se haya hecho público, o tras `docker login
+ghcr.io`):
 
 ```bash
 docker pull ghcr.io/<owner>/falck:latest
 ```
 
-The CD job produces a deployable artifact; pointing it at a real host (Azure Web
-App for Containers, AWS ECS, a VM, etc.) is a matter of adding a deploy step with
-that platform's credentials as repository secrets.
+El job de CD produce un artefacto desplegable; apuntarlo a un host real (Azure
+Web App for Containers, AWS ECS, una VM, etc.) es cuestión de añadir un paso de
+despliegue con las credenciales de esa plataforma como secretos del repositorio.
 
 ## Endpoints
 
-| Method | Route                                          | Roles       | Description |
-|--------|------------------------------------------------|-------------|-------------|
-| POST   | `/api/auth/register`                           | anonymous   | Create a read-only User account, returns a JWT |
-| POST   | `/api/auth/login`                              | anonymous   | Authenticate, returns a JWT with the role claim |
-| GET    | `/api/employees`                               | Admin, User | List employees (with computed yearly bonus) |
-| GET    | `/api/employees/{id}`                          | Admin, User | Employee detail: position history + projects |
-| POST   | `/api/employees`                               | Admin       | Create employee (opens its first history record) |
-| PUT    | `/api/employees/{id}`                          | Admin       | Update; a position change is recorded in the history |
-| DELETE | `/api/employees/{id}`                          | Admin       | Delete employee |
-| GET    | `/api/departments`                             | Admin, User | List departments |
-| GET    | `/api/departments/{id}/employees-with-projects`| Admin, User | Section 4.3 query over HTTP |
+| Método | Ruta                                            | Roles       | Descripción |
+|--------|-------------------------------------------------|-------------|-------------|
+| POST   | `/api/auth/register`                            | anónimo     | Crea una cuenta User (solo lectura), devuelve un JWT |
+| POST   | `/api/auth/login`                               | anónimo     | Autentica y devuelve un JWT con el claim de rol |
+| GET    | `/api/employees`                                | Admin, User | Lista empleados (con bono anual calculado) |
+| GET    | `/api/employees/{id}`                           | Admin, User | Detalle del empleado: historial de cargos + proyectos |
+| POST   | `/api/employees`                                | Admin       | Crea empleado (abre su primer registro de historial) |
+| PUT    | `/api/employees/{id}`                           | Admin       | Actualiza; un cambio de cargo se registra en el historial |
+| DELETE | `/api/employees/{id}`                           | Admin       | Elimina empleado |
+| GET    | `/api/departments`                              | Admin, User | Lista departamentos |
+| GET    | `/api/departments/{id}/employees-with-projects` | Admin, User | Consulta de la sección 4.3 sobre HTTP |
 
-## Architecture
+## Arquitectura
 
-**Clean Architecture** with the dependency rule pointing inwards:
+**Clean Architecture** con la regla de dependencias apuntando hacia adentro:
 
 ```
 Falck.Api ──────────► Falck.Application ──────► Falck.Domain
     │                        ▲
-    └──► Falck.Infrastructure┘   (implements Application/Domain contracts)
+    └──► Falck.Infrastructure┘   (implementa los contratos de Application/Domain)
 ```
 
-| Project | Responsibility | Depends on |
+| Proyecto | Responsabilidad | Depende de |
 |---|---|---|
-| `Falck.Domain` | Entities, business rules (bonus strategies, position-change rule) | nothing |
-| `Falck.Application` | Use cases (services), DTOs, repository/port contracts | Domain |
-| `Falck.Infrastructure` | EF Core, repositories, BCrypt, JWT generation | Application |
-| `Falck.Api` | Controllers, middleware, DI composition, Swagger | Application, Infrastructure |
+| `Falck.Domain` | Entidades, reglas de negocio (estrategias de bono, regla de cambio de cargo) | nada |
+| `Falck.Application` | Casos de uso (servicios), DTOs, contratos de repositorio/puertos | Domain |
+| `Falck.Infrastructure` | EF Core, repositorios, BCrypt, generación de JWT | Application |
+| `Falck.Api` | Controladores, middleware, composición de DI, Swagger | Application, Infrastructure |
 
-The API never touches EF Core directly; the application layer depends only on
-interfaces (`IEmployeeRepository`, `IPasswordHasher`, `IJwtTokenGenerator`)
-whose implementations live in Infrastructure.
+La API nunca toca EF Core directamente; la capa de aplicación depende solo de
+interfaces (`IEmployeeRepository`, `IPasswordHasher`, `IJwtTokenGenerator`) cuyas
+implementaciones viven en Infrastructure.
 
-### Design patterns
+### Patrones de diseño
 
-1. **Strategy** — `IBonusStrategy` (`Falck.Domain/Strategies`) encapsulates the
-   bonus policy: `RegularEmployeeBonusStrategy` (10%) and
-   `ManagerBonusStrategy` (20%, shared by every manager type). New policies are
-   added without touching `Employee` (Open/Closed).
-2. **Factory** — `BonusStrategyFactory` resolves the strategy from the
-   employee's position, so callers never branch on position themselves.
-3. **Repository** — persistence is abstracted behind `IEmployeeRepository` /
-   `IDepartmentRepository` / `IUserRepository`; EF Core implementations live in
-   `Falck.Infrastructure/Persistence/Repositories`. The `DbContext` doubles as
-   the Unit of Work.
+1. **Strategy** — `IBonusStrategy` (`Falck.Domain/Strategies`) encapsula la
+   política de bono: `RegularEmployeeBonusStrategy` (10%) y `ManagerBonusStrategy`
+   (20%, compartida por todos los tipos de gerente). Se agregan nuevas políticas
+   sin tocar `Employee` (Open/Closed).
+2. **Factory** — `BonusStrategyFactory` resuelve la estrategia a partir del cargo
+   del empleado, de modo que quien la invoca nunca ramifica según el cargo.
+3. **Repository** — la persistencia se abstrae detrás de `IEmployeeRepository` /
+   `IDepartmentRepository` / `IUserRepository`; las implementaciones con EF Core
+   viven en `Falck.Infrastructure/Persistence/Repositories`. El `DbContext`
+   cumple además el rol de Unit of Work.
 
 ### SOLID
 
-- **S** — thin controllers, one use-case service per aggregate, one strategy
-  per bonus policy, one `IEntityTypeConfiguration` per entity.
-- **O** — new manager types = one enum entry; new bonus policies = one new
-  strategy class. Nothing existing changes.
-- **L** — every `IBonusStrategy` is interchangeable wherever the interface is
-  expected; the factory relies on that.
-- **I** — small, focused contracts (`IPasswordHasher` has 2 methods) instead of
-  one fat "IRepository of everything".
-- **D** — Application depends on abstractions; EF Core, BCrypt and JWT are
-  implementation details injected from the composition roots
+- **S** — controladores delgados, un servicio de caso de uso por agregado, una
+  estrategia por política de bono, un `IEntityTypeConfiguration` por entidad.
+- **O** — nuevos tipos de gerente = una entrada de enum; nuevas políticas de bono
+  = una nueva clase de estrategia. Nada existente cambia.
+- **L** — toda `IBonusStrategy` es intercambiable donde se espera la interfaz; la
+  factory se apoya en eso.
+- **I** — contratos pequeños y enfocados (`IPasswordHasher` tiene 2 métodos) en
+  lugar de un único "IRepository de todo".
+- **D** — Application depende de abstracciones; EF Core, BCrypt y JWT son
+  detalles de implementación inyectados desde las raíces de composición
   (`AddApplication()` / `AddInfrastructure()`).
 
-### Design decisions worth calling out
+### Decisiones de diseño a destacar
 
-- **`CurrentPosition` is an int-backed enum** (`PositionType`). The spec asks
-  for `CurrentPosition (int)`; the enum persists as `int` while keeping the
-  values type-safe. Manager types occupy a "managerial band" (values >= 10), so
-  `IsManagerial()` covers *many types of managers* with one rule.
-- **`PositionHistory.Position` is a string** exactly as the spec requires; the
-  value is the `PositionType` name to stay consistent with the enum.
-- **Position changes go through the domain** — `Employee.ChangePosition()` is
-  the only way to change position: it closes the open history record and opens
-  a new one. The service never manipulates the history by hand.
-- **Custom `Users` table + BCrypt instead of ASP.NET Identity** — the test
-  needs two roles and JWT issuance; full Identity would add 7 tables and hide
-  the interesting parts (hashing, claims) behind magic.
-- **Demo users seeded at startup (`DbSeeder`), not via `HasData`** — BCrypt
-  emits a different hash per run, which would dirty every future migration.
-- **Manual DTO mapping instead of AutoMapper** — the surface is small; explicit
-  mapping stays compile-time safe.
-- **Repo-local `nuget.config`** pinning nuget.org so the solution restores
-  identically on any machine.
+- **`CurrentPosition` es un enum respaldado por int** (`PositionType`). El
+  enunciado pide `CurrentPosition (int)`; el enum persiste como `int` mientras
+  mantiene los valores con seguridad de tipos. Los tipos de gerente ocupan una
+  "banda gerencial" (valores >= 10), así que `IsManagerial()` cubre *muchos tipos
+  de gerente* con una sola regla.
+- **`PositionHistory.Position` es un string** exactamente como pide el enunciado;
+  el valor es el nombre del `PositionType` para mantener consistencia con el enum.
+- **Los cambios de cargo pasan por el dominio** — `Employee.ChangePosition()` es
+  la única forma de cambiar de cargo: cierra el registro de historial abierto y
+  abre uno nuevo. El servicio nunca manipula el historial a mano.
+- **Tabla `Users` propia + BCrypt en lugar de ASP.NET Identity** — la prueba
+  necesita dos roles y emisión de JWT; Identity completo agregaría 7 tablas y
+  ocultaría lo interesante (hashing, claims) tras "magia".
+- **Usuarios de demo sembrados al arrancar (`DbSeeder`), no vía `HasData`** —
+  BCrypt emite un hash distinto por ejecución, lo que ensuciaría toda migración
+  futura.
+- **Mapeo manual de DTOs en lugar de AutoMapper** — la superficie es pequeña; el
+  mapeo explícito mantiene la seguridad en tiempo de compilación.
+- **`nuget.config` local al repo** fijando nuget.org para que la solución se
+  restaure de forma idéntica en cualquier máquina.
 
-## Database schema (section 4.1)
+## Esquema de base de datos (sección 4.1)
 
-Tables: `Employees`, `Departments` (1:N), `Projects` (N:N via
-`EmployeeProjects`), `PositionHistories` (1:N, `EndDate NULL` = current
-position), `Users`. Full DDL: [`docs/database-schema.sql`](docs/database-schema.sql).
-Salary is `decimal(18,2)`; `PositionHistories` has a covering index on
-`(EmployeeId, StartDate)`; `Users.Username` is unique.
+Tablas: `Employees`, `Departments` (1:N), `Projects` (N:N vía
+`EmployeeProjects`), `PositionHistories` (1:N, `EndDate NULL` = cargo actual),
+`Users`. DDL completo:
+[`docs/database-schema.sql`](docs/database-schema.sql). El salario es
+`decimal(18,2)`; `PositionHistories` tiene un índice de cobertura sobre
+`(EmployeeId, StartDate)`; `Users.Username` es único.
 
-The section 4.3 LINQ query lives in
+La consulta LINQ de la sección 4.3 vive en
 `EmployeeRepository.GetByDepartmentWithProjectsAsync`:
 
 ```csharp
@@ -208,117 +215,122 @@ context.Employees
 
 ---
 
-## Written answers
+## Respuestas escritas
 
-### 2.2 — How authentication and authorization are implemented
+### 2.2 — Cómo se implementan la autenticación y la autorización
 
-**Authentication** (who you are): the API issues stateless JWTs. `POST
-/api/auth/login` verifies the BCrypt hash and returns a token signed with
-HMAC-SHA256 containing `sub`, `unique_name`, `jti` and a role claim, with a
-60-minute lifetime. The JWT bearer middleware validates signature, issuer,
-audience and lifetime on every request and builds the `ClaimsPrincipal`. The
-signing key lives in configuration for this demo; in production it would come
-from a secret store (user-secrets, environment variables, Azure Key Vault) and
-tokens would be paired with refresh tokens over HTTPS only.
+**Autenticación** (quién eres): la API emite JWT sin estado. `POST
+/api/auth/login` verifica el hash BCrypt y devuelve un token firmado con
+HMAC-SHA256 que contiene `sub`, `unique_name`, `jti` y un claim de rol, con una
+vigencia de 60 minutos. El middleware JWT bearer valida firma, emisor, audiencia
+y vigencia en cada petición y construye el `ClaimsPrincipal`. La clave de firma
+vive en la configuración para esta demo; en producción vendría de un almacén de
+secretos (user-secrets, variables de entorno, Azure Key Vault) y los tokens se
+combinarían con refresh tokens únicamente sobre HTTPS.
 
-**Authorization** (what you may do): role-based, driven by the role claim.
-`EmployeesController` is decorated with `[Authorize(Roles = "Admin,User")]` and
-the mutating actions tighten it to `[Authorize(Roles = "Admin")]`, which yields
-exactly the section 3.2 matrix: Admin = full access, User = GET only. For finer
-rules the same mechanism scales to policy-based authorization
-(`AddAuthorization(options => options.AddPolicy(...))`) with custom
-requirements/handlers.
+**Autorización** (qué puedes hacer): basada en roles, impulsada por el claim de
+rol. `EmployeesController` está decorado con `[Authorize(Roles = "Admin,User")]`
+y las acciones que modifican datos lo restringen a `[Authorize(Roles =
+"Admin")]`, lo que produce exactamente la matriz de la sección 3.2: Admin =
+acceso total, User = solo GET. Para reglas más finas, el mismo mecanismo escala a
+autorización basada en políticas (`AddAuthorization(options =>
+options.AddPolicy(...))`) con requisitos/handlers personalizados.
 
-**Hardening applied**: self-registration always creates a read-only `User`
-account (the role is never client-supplied, so an anonymous caller cannot grant
-itself Admin — Admin accounts are seeded or promoted by an existing admin); the
-`/api/auth` endpoints are rate-limited (fixed window, 5 requests / 30 s) to blunt
-brute-force and username enumeration; the login path runs a constant-time decoy
-hash on unknown usernames so response timing does not reveal which accounts
-exist; and startup fails fast in Production if `Jwt:Key` is missing, too short
-for HMAC-SHA256, or still the committed development placeholder (supply it via
-user-secrets or the `Jwt__Key` environment variable).
+**Endurecimiento aplicado**: el auto-registro siempre crea una cuenta `User` de
+solo lectura (el rol nunca lo suministra el cliente, así que un llamante anónimo
+no puede otorgarse Admin — las cuentas Admin se siembran o las promueve un admin
+existente); los endpoints `/api/auth` tienen límite de tasa (ventana fija, 5
+peticiones / 30 s) para frenar fuerza bruta y enumeración de usuarios; el flujo
+de login ejecuta un hash señuelo de tiempo constante ante usuarios desconocidos
+para que el tiempo de respuesta no revele qué cuentas existen; y el arranque
+falla rápido en Producción si `Jwt:Key` falta, es demasiado corta para
+HMAC-SHA256, o sigue siendo el placeholder de desarrollo commiteado (suminístrala
+vía user-secrets o la variable de entorno `Jwt__Key`).
 
-### 2.3 — Middleware concept
+### 2.3 — Concepto de middleware
 
-Middleware are components composed into a pipeline; each receives the
-`HttpContext`, can act **before and after** invoking the next component, and
-can short-circuit the chain (as the JWT middleware does when returning 401).
-Registration order defines execution order — it is an onion: the first
-registered component sees the request first and the response last.
+El middleware son componentes compuestos en una tubería (pipeline); cada uno
+recibe el `HttpContext`, puede actuar **antes y después** de invocar al siguiente
+componente, y puede cortocircuitar la cadena (como hace el middleware JWT al
+devolver 401). El orden de registro define el orden de ejecución — es una cebolla:
+el primer componente registrado ve la petición primero y la respuesta al final.
 
-The custom implementation is
+La implementación personalizada es
 [`RequestLoggingMiddleware`](src/Falck.Api/Middleware/RequestLoggingMiddleware.cs),
-which logs method, path, caller IP, authenticated user, final status code and
-elapsed time. It is registered outermost — before
-`ExceptionHandlingMiddleware` — so it records the status code that error
-handling actually produced. Sample output:
+que registra método, ruta, IP del llamante, usuario autenticado, código de estado
+final y tiempo transcurrido. Se registra en la capa más externa — antes de
+`ExceptionHandlingMiddleware` — para que capture el código de estado que
+realmente produjo el manejo de errores. Ejemplo de salida:
 
 ```
 HTTP GET /api/employees from 127.0.0.1 as 'admin' => 200 in 244 ms
 HTTP GET /api/employees/999 from 127.0.0.1 as 'admin' => 404 in 108 ms
 ```
 
-### 5.1 — Common .NET performance issues and how to address them
+### 5.1 — Problemas comunes de rendimiento en .NET y cómo abordarlos
 
-- **Sync-over-async** (`.Result`, `.Wait()`, missing `async`): starves the
-  thread pool under load. Use `async/await` end to end — every I/O path in this
-  API is async and accepts a `CancellationToken`.
-- **N+1 queries / lazy loading**: one query per row when iterating navigation
-  properties. Use eager loading (`Include`) or projections (`Select` into
-  DTOs) so EF issues one SQL statement.
-- **Tracking read-only queries**: the change tracker costs memory and CPU. Use
-  `AsNoTracking()` for reads (done in the list queries here).
-- **Fetching more than needed**: `SELECT *` on wide tables, no pagination.
-  Project only required columns and page (`Skip/Take`) large result sets.
-- **Excessive allocations**: string concatenation in hot loops, large object
-  heap churn. Use `StringBuilder`/`Span<T>`, pool buffers (`ArrayPool`), cache
-  serializer instances.
-- **No caching**: recomputing or re-reading immutable data per request. Use
-  `IMemoryCache`/`HybridCache` or a distributed cache (Redis) with sensible
-  invalidation.
-- **Connection/socket misuse**: instantiating `HttpClient` per request causes
-  socket exhaustion — use `IHttpClientFactory`. Let ADO.NET pool DB
-  connections (don't hold them).
-- **Middleware doing heavy work per request**: keep the hot path lean; move
-  expensive work to background services or queues.
+- **Sync-over-async** (`.Result`, `.Wait()`, falta de `async`): agota el pool de
+  hilos bajo carga. Usa `async/await` de extremo a extremo — cada ruta de I/O en
+  esta API es asíncrona y acepta un `CancellationToken`.
+- **Consultas N+1 / lazy loading**: una consulta por fila al iterar propiedades
+  de navegación. Usa carga ansiosa (`Include`) o proyecciones (`Select` a DTOs)
+  para que EF emita una sola sentencia SQL.
+- **Tracking en consultas de solo lectura**: el change tracker cuesta memoria y
+  CPU. Usa `AsNoTracking()` para lecturas (aplicado en las consultas de listado
+  aquí).
+- **Traer más de lo necesario**: `SELECT *` en tablas anchas, sin paginación.
+  Proyecta solo las columnas requeridas y pagina (`Skip/Take`) los conjuntos de
+  resultados grandes.
+- **Asignaciones excesivas**: concatenación de strings en bucles calientes, churn
+  en el Large Object Heap. Usa `StringBuilder`/`Span<T>`, agrupa buffers
+  (`ArrayPool`), cachea instancias de serializadores.
+- **Falta de caché**: recalcular o releer datos inmutables por petición. Usa
+  `IMemoryCache`/`HybridCache` o una caché distribuida (Redis) con invalidación
+  sensata.
+- **Mal uso de conexiones/sockets**: instanciar `HttpClient` por petición causa
+  agotamiento de sockets — usa `IHttpClientFactory`. Deja que ADO.NET agrupe las
+  conexiones a la base de datos (no las retengas).
+- **Middleware haciendo trabajo pesado por petición**: mantén el hot path ligero;
+  mueve el trabajo costoso a servicios en segundo plano o colas.
 
-### 5.2 — Profiling and optimizing a slow query
+### 5.2 — Perfilado y optimización de una consulta lenta
 
-1. **Measure first.** Enable EF Core logging (`LogTo` /
-   `EnableSensitiveDataLogging` in dev) or interceptors to capture the exact
-   SQL and its duration; at API level, the request logging middleware already
-   exposes slow endpoints. In production, use Application Insights /
-   OpenTelemetry traces or MiniProfiler to find the offending query instead of
-   guessing.
-2. **Reproduce and inspect the plan.** Run the captured SQL in SSMS with the
-   actual execution plan (or `SET STATISTICS IO, TIME ON`). Look for scans on
-   large tables, key lookups, implicit conversions and missing-index warnings.
-3. **Fix the usual suspects, cheapest first:**
-   - add/adjust indexes to match the `WHERE`/`JOIN`/`ORDER BY` (covering
-     indexes where it pays off);
-   - rewrite the LINQ so it translates well: filter/project in SQL, avoid
-     client-side evaluation, avoid `Contains` over huge in-memory lists;
-   - eliminate N+1 with `Include`/projections; use `AsNoTracking` for reads;
-   - use pagination instead of materializing everything;
-   - for hot read paths, consider a hand-written SQL query
-     (`FromSqlInterpolated`) or a cached result.
-4. **Verify.** Re-run with the same measurement (plan + timings, load test if
-   the issue was concurrency) and keep the numbers — optimization without
-   before/after data is folklore.
+1. **Medir primero.** Habilita el logging de EF Core (`LogTo` /
+   `EnableSensitiveDataLogging` en dev) o interceptores para capturar el SQL
+   exacto y su duración; a nivel de API, el middleware de logging de peticiones ya
+   expone los endpoints lentos. En producción, usa trazas de Application Insights
+   / OpenTelemetry o MiniProfiler para encontrar la consulta culpable en lugar de
+   adivinar.
+2. **Reproducir e inspeccionar el plan.** Ejecuta el SQL capturado en SSMS con el
+   plan de ejecución real (o `SET STATISTICS IO, TIME ON`). Busca scans en tablas
+   grandes, key lookups, conversiones implícitas y advertencias de índices
+   faltantes.
+3. **Corregir los sospechosos habituales, del más barato primero:**
+   - agrega/ajusta índices para que coincidan con el `WHERE`/`JOIN`/`ORDER BY`
+     (índices de cobertura donde valga la pena);
+   - reescribe el LINQ para que se traduzca bien: filtra/proyecta en SQL, evita
+     evaluación del lado del cliente, evita `Contains` sobre listas enormes en
+     memoria;
+   - elimina el N+1 con `Include`/proyecciones; usa `AsNoTracking` para lecturas;
+   - usa paginación en vez de materializar todo;
+   - para hot paths de lectura, considera una consulta SQL escrita a mano
+     (`FromSqlInterpolated`) o un resultado cacheado.
+4. **Verificar.** Vuelve a ejecutar con la misma medición (plan + tiempos, prueba
+   de carga si el problema era concurrencia) y conserva los números — optimizar
+   sin datos de antes/después es folclore.
 
 ---
 
-## Project structure
+## Estructura del proyecto
 
 ```
 ├── src/
-│   ├── Falck.Domain/            # Entities, enums, bonus Strategy + Factory
-│   ├── Falck.Application/       # Use cases, DTOs, ports (repositories, hasher, JWT)
-│   ├── Falck.Infrastructure/    # EF Core, migrations, repositories, BCrypt, JWT
-│   └── Falck.Api/               # Controllers, middleware, DI, Swagger
+│   ├── Falck.Domain/            # Entidades, enums, Strategy + Factory de bono
+│   ├── Falck.Application/       # Casos de uso, DTOs, puertos (repositorios, hasher, JWT)
+│   ├── Falck.Infrastructure/    # EF Core, migraciones, repositorios, BCrypt, JWT
+│   └── Falck.Api/               # Controladores, middleware, DI, Swagger
 ├── tests/
-│   └── Falck.Tests/             # 25 unit tests (domain + auth service)
+│   └── Falck.Tests/             # 46 pruebas unitarias (dominio + servicios + infra)
 └── docs/
-    └── database-schema.sql      # Full DDL exported from the migrations
+    └── database-schema.sql      # DDL completo exportado desde las migraciones
 ```
