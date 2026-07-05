@@ -32,7 +32,7 @@ dotnet run --project src/Falck.Api --launch-profile http
 ```
 
 Eso es todo: al arrancar, la API aplica las migraciones de EF Core, crea la base
-de datos `FalckEmployeesDb` y siembra datos de demostración (departamentos,
+de datos `FalckDb` y siembra datos de demostración (departamentos,
 proyectos, empleados con historial de cargos y dos cuentas de demo).
 
 Abre **http://localhost:5229/swagger** para explorar la API.

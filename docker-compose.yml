@@ -30,7 +30,7 @@ services:
       ASPNETCORE_ENVIRONMENT: "Development"      # habilita Swagger para el evaluador
       ASPNETCORE_URLS: "http://+:8080"
       # Sobrescribe ConnectionStrings:DefaultConnection de appsettings.json.
-      ConnectionStrings__DefaultConnection: "Server=db,1433;Database=FalckEmployeesDb;User Id=sa;Password=Your_strong_Pass123;TrustServerCertificate=True"
+      ConnectionStrings__DefaultConnection: "Server=db,1433;Database=FalckDb;User Id=sa;Password=Your_strong_Pass123;TrustServerCertificate=True"
       # Sobrescribe Jwt:Key; en cualquier despliegue real, suministra aquí un secreto real.
       Jwt__Key: "docker-compose-dev-signing-key-0123456789ABCDEF0123456789ABCDEF"
     ports:
