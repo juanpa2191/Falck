@@ -1,6 +1,6 @@
 using AutoMapper;
 using Falck.Application.Common.Exceptions;
-using Falck.Application.DTOs;
+using Falck.Application.DTOs.Employees;
 using Falck.Application.Interfaces;
 using Falck.Domain.Entities;
 

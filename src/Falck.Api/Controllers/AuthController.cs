@@ -1,4 +1,4 @@
-using Falck.Application.DTOs;
+using Falck.Application.DTOs.Auth;
 using Falck.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

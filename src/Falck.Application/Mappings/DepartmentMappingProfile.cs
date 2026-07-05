@@ -1,5 +1,5 @@
 using AutoMapper;
-using Falck.Application.DTOs;
+using Falck.Application.DTOs.Departments;
 using Falck.Domain.Entities;
 
 namespace Falck.Application.Mappings;

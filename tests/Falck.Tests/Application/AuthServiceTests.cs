@@ -1,5 +1,5 @@
 using Falck.Application.Common.Exceptions;
-using Falck.Application.DTOs;
+using Falck.Application.DTOs.Auth;
 using Falck.Application.Interfaces;
 using Falck.Application.Services;
 using Falck.Domain.Entities;

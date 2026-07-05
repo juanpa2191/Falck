@@ -1,4 +1,5 @@
-using Falck.Application.DTOs;
+using Falck.Application.DTOs.Departments;
+using Falck.Application.DTOs.Employees;
 using Falck.Application.Services;
 using Falck.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;

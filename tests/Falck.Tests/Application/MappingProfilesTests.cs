@@ -1,5 +1,6 @@
 using AutoMapper;
-using Falck.Application.DTOs;
+using Falck.Application.DTOs.Departments;
+using Falck.Application.DTOs.Employees;
 using Falck.Domain.Entities;
 using Falck.Domain.Enums;
 using Falck.Tests.TestHelpers;

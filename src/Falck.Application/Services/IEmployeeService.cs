@@ -1,4 +1,4 @@
-using Falck.Application.DTOs;
+using Falck.Application.DTOs.Employees;
 
 namespace Falck.Application.Services;
 
