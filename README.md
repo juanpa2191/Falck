@@ -4,6 +4,8 @@ Prueba técnica para Desarrollador Backend .NET. API web ASP.NET Core 9 para
 gestionar empleados, departamentos, proyectos e historial de cargos, protegida
 con JWT y autorización basada en roles.
 
+**Repositorio:** https://github.com/juanpa2191/Falck
+
 ## Stack tecnológico
 
 - .NET 9 / ASP.NET Core Web API (controladores)
@@ -26,7 +28,7 @@ con JWT y autorización basada en roles.
 ### Ejecutar
 
 ```bash
-git clone <este-repo>
+git clone https://github.com/juanpa2191/Falck.git
 cd Falck
 dotnet run --project src/Falck.Api --launch-profile http
 ```
@@ -105,7 +107,7 @@ al menos una vez y el paquete se haya hecho público, o tras `docker login
 ghcr.io`):
 
 ```bash
-docker pull ghcr.io/<owner>/falck:latest
+docker pull ghcr.io/juanpa2191/falck:latest
 ```
 
 El pipeline produce un artefacto desplegable; apuntarlo a un host real (Azure
