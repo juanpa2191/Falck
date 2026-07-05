@@ -6,10 +6,12 @@ using Falck.Domain.Strategies;
 namespace Falck.Application.Mappings;
 
 /// <summary>
-/// Perfil de AutoMapper para la entidad de empleados y sus tipos relacionados
-/// (historial de cargos y proyectos). Separado del perfil de departamentos para
-/// respetar el Principio de Responsabilidad Única: cada agregado tiene su propia
-/// configuración de mapeo.
+/// Perfil de AutoMapper para el agregado Employee. Incluye el mapeo de
+/// <see cref="PositionHistory"/> porque es un hijo del agregado (solo existe
+/// dentro de un empleado y solo se proyecta como parte de
+/// <see cref="EmployeeDetailDto"/>): comparte la misma razón para cambiar.
+/// Las entidades con identidad propia (Department, Project) tienen su propio
+/// perfil, respetando el Principio de Responsabilidad Única.
 /// </summary>
 public class EmployeeMappingProfile : Profile
 {
@@ -34,7 +36,8 @@ public class EmployeeMappingProfile : Profile
             .ForCtorParam(nameof(EmployeeDetailDto.PositionHistory),
                 o => o.MapFrom(src => src.PositionHistories.OrderBy(h => h.StartDate)));
 
+        // PositionHistory es un hijo del agregado Employee → se mapea aquí.
+        // Project, entidad con identidad propia, vive en ProjectMappingProfile.
         CreateMap<PositionHistory, PositionHistoryDto>();
-        CreateMap<Project, ProjectDto>();
     }
 }

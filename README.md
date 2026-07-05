@@ -189,9 +189,11 @@ implementaciones viven en Infrastructure.
   BCrypt emite un hash distinto por ejecución, lo que ensuciaría toda migración
   futura.
 - **AutoMapper con un perfil por agregado** — el mapeo entidad → DTO vive en
-  `EmployeeMappingProfile` y `DepartmentMappingProfile` (separados para respetar
-  Responsabilidad Única); se registran con `AddAutoMapper` y los servicios
-  dependen de `IMapper`. El bono anual sigue siendo lógica de dominio
+  `EmployeeMappingProfile`, `DepartmentMappingProfile` y `ProjectMappingProfile`
+  (uno por raíz de agregado, para respetar Responsabilidad Única). Los hijos de
+  un agregado se mapean con su raíz: `PositionHistory` va en el perfil de Employee
+  porque solo existe dentro de un empleado. Se registran con `AddAutoMapper` y los
+  servicios dependen de `IMapper`. El bono anual sigue siendo lógica de dominio
   (`Employee.CalculateYearlyBonus` con la Strategy/Factory), invocada desde el
   perfil. Nota de seguridad: se fija AutoMapper 14 (última bajo licencia libre) y
   se suprime **solo** el advisory GHSA-rvv3-g6hj-g44x vía `NuGetAuditSuppress`
