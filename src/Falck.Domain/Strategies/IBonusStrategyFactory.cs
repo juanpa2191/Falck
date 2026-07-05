@@ -3,8 +3,8 @@ using Falck.Domain.Enums;
 namespace Falck.Domain.Strategies;
 
 /// <summary>
-/// Factory pattern: resolves the <see cref="IBonusStrategy"/> that applies to
-/// a given position, so callers never branch on position themselves.
+/// Patrón Factory: resuelve la <see cref="IBonusStrategy"/> que aplica a un
+/// cargo dado, de modo que quien la invoca nunca ramifica según el cargo.
 /// </summary>
 public interface IBonusStrategyFactory
 {

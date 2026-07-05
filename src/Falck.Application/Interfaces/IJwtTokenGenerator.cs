@@ -2,7 +2,7 @@ using Falck.Domain.Entities;
 
 namespace Falck.Application.Interfaces;
 
-/// <summary>Issues signed JWTs for authenticated users.</summary>
+/// <summary>Emite JWT firmados para usuarios autenticados.</summary>
 public interface IJwtTokenGenerator
 {
     (string Token, DateTime ExpiresAtUtc) GenerateToken(User user);

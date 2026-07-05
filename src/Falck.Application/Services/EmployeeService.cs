@@ -40,8 +40,8 @@ public class EmployeeService(
             DepartmentId = request.DepartmentId
         };
 
-        // Open the first record of the position history at hire time. EF Core
-        // fills in the EmployeeId once the employee is saved.
+        // Abre el primer registro del historial de cargos al momento de la
+        // contratación. EF Core completa el EmployeeId una vez guardado el empleado.
         employee.PositionHistories.Add(
             PositionHistory.Open(employee.Id, request.CurrentPosition, DateTime.UtcNow.Date));
 
@@ -62,8 +62,8 @@ public class EmployeeService(
         employee.Salary = request.Salary;
         employee.DepartmentId = request.DepartmentId;
 
-        // Route position changes through the domain rule so the history stays
-        // consistent (closes the open record, opens a new one).
+        // Enruta los cambios de cargo a través de la regla de dominio para que
+        // el historial se mantenga consistente (cierra el registro abierto, abre uno nuevo).
         if (employee.CurrentPosition != request.CurrentPosition)
             employee.ChangePosition(request.CurrentPosition, DateTime.UtcNow.Date);
 

@@ -4,8 +4,9 @@ using Microsoft.EntityFrameworkCore;
 namespace Falck.Infrastructure.Persistence;
 
 /// <summary>
-/// EF Core database context. Also acts as the Unit of Work: repositories share
-/// the same context instance per request and commit through SaveChangesAsync.
+/// Contexto de base de datos de EF Core. Actúa además como Unit of Work: los
+/// repositorios comparten la misma instancia de contexto por petición y confirman
+/// los cambios mediante SaveChangesAsync.
 /// </summary>
 public class FalckDbContext(DbContextOptions<FalckDbContext> options) : DbContext(options)
 {
@@ -17,7 +18,7 @@ public class FalckDbContext(DbContextOptions<FalckDbContext> options) : DbContex
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Picks up every IEntityTypeConfiguration<T> in this assembly.
+        // Recoge todas las IEntityTypeConfiguration<T> de este ensamblado.
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(FalckDbContext).Assembly);
     }
 }

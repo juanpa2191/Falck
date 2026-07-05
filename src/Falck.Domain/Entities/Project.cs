@@ -1,6 +1,6 @@
 namespace Falck.Domain.Entities;
 
-/// <summary>A project employees can be assigned to (many-to-many).</summary>
+/// <summary>Un proyecto al que se pueden asignar empleados (muchos a muchos).</summary>
 public class Project
 {
     public int Id { get; set; }

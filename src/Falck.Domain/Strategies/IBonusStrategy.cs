@@ -1,12 +1,12 @@
 namespace Falck.Domain.Strategies;
 
 /// <summary>
-/// Strategy pattern: each implementation encapsulates one bonus policy.
-/// New policies (e.g. executives) can be added without modifying
-/// <see cref="Entities.Employee"/> or existing strategies (Open/Closed).
+/// Patrón Strategy: cada implementación encapsula una política de bono.
+/// Se pueden agregar nuevas políticas (p. ej. ejecutivos) sin modificar
+/// <see cref="Entities.Employee"/> ni las estrategias existentes (Open/Closed).
 /// </summary>
 public interface IBonusStrategy
 {
-    /// <summary>Calculates the yearly bonus for the given salary.</summary>
+    /// <summary>Calcula el bono anual para el salario dado.</summary>
     decimal CalculateYearlyBonus(decimal salary);
 }

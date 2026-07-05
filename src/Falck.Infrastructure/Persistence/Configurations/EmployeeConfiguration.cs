@@ -17,14 +17,14 @@ public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
             .IsRequired()
             .HasMaxLength(100);
 
-        // Stored as int, satisfying the "CurrentPosition (int)" requirement.
+        // Almacenado como int, cumpliendo el requisito "CurrentPosition (int)".
         builder.Property(e => e.CurrentPosition)
             .HasConversion<int>();
 
         builder.Property(e => e.Salary)
             .HasPrecision(18, 2);
 
-        // SQL Server rowversion → optimistic concurrency on updates/deletes.
+        // rowversion de SQL Server → concurrencia optimista en actualizaciones/eliminaciones.
         builder.Property(e => e.RowVersion)
             .IsRowVersion();
 
@@ -38,7 +38,7 @@ public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
             .HasForeignKey(h => h.EmployeeId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // Many-to-many with an explicit join table name and seeded assignments.
+        // Muchos a muchos con un nombre de tabla de unión explícito y asignaciones sembradas.
         builder.HasMany(e => e.Projects)
             .WithMany(p => p.Employees)
             .UsingEntity<Dictionary<string, object>>(
@@ -55,8 +55,8 @@ public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
                         new { EmployeeId = 4, ProjectId = 2 });
                 });
 
-        // Note: María (5) has no project and Ana (3) belongs to HR, so the
-        // section 4.3 query has both positive and negative cases out of the box.
+        // Nota: María (5) no tiene proyecto y Ana (3) pertenece a RR. HH., así que
+        // la consulta de la sección 4.3 tiene casos positivos y negativos desde el inicio.
         builder.HasData(
             new Employee { Id = 1, Name = "Laura Gómez", CurrentPosition = PositionType.Manager, Salary = 9000m, DepartmentId = 1 },
             new Employee { Id = 2, Name = "Carlos Pérez", CurrentPosition = PositionType.Developer, Salary = 5000m, DepartmentId = 1 },

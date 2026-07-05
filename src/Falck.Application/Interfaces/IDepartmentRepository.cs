@@ -2,7 +2,7 @@ using Falck.Domain.Entities;
 
 namespace Falck.Application.Interfaces;
 
-/// <summary>Read-side contract for departments (used to validate employees).</summary>
+/// <summary>Contrato de solo lectura para departamentos (usado para validar empleados).</summary>
 public interface IDepartmentRepository
 {
     Task<bool> ExistsAsync(int id, CancellationToken cancellationToken = default);

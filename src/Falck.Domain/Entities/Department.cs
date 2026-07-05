@@ -1,6 +1,6 @@
 namespace Falck.Domain.Entities;
 
-/// <summary>A company department; groups employees (one-to-many).</summary>
+/// <summary>Un departamento de la empresa; agrupa empleados (uno a muchos).</summary>
 public class Department
 {
     public int Id { get; set; }

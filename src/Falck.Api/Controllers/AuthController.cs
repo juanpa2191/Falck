@@ -6,14 +6,14 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace Falck.Api.Controllers;
 
-/// <summary>Issues JWT tokens: registration and login (section 3.1).</summary>
+/// <summary>Emite tokens JWT: registro e inicio de sesión (sección 3.1).</summary>
 [ApiController]
 [Route("api/[controller]")]
 [EnableRateLimiting("auth")]
 public class AuthController(IAuthService authService) : ControllerBase
 {
-    /// <summary>Registers a new read-only (User) account and returns its first token.</summary>
-    /// <remarks>Demo accounts already seeded: admin/Admin123! and user/User123!.</remarks>
+    /// <summary>Registra una nueva cuenta de solo lectura (User) y devuelve su primer token.</summary>
+    /// <remarks>Cuentas de demo ya sembradas: admin/Admin123! y user/User123!.</remarks>
     [HttpPost("register")]
     [AllowAnonymous]
     [ProducesResponseType<AuthResponse>(StatusCodes.Status200OK)]
@@ -23,7 +23,7 @@ public class AuthController(IAuthService authService) : ControllerBase
         RegisterRequest request, CancellationToken cancellationToken) =>
         Ok(await authService.RegisterAsync(request, cancellationToken));
 
-    /// <summary>Authenticates a user and returns a JWT with its role claim.</summary>
+    /// <summary>Autentica a un usuario y devuelve un JWT con su claim de rol.</summary>
     [HttpPost("login")]
     [AllowAnonymous]
     [ProducesResponseType<AuthResponse>(StatusCodes.Status200OK)]

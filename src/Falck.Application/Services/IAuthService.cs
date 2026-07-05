@@ -2,7 +2,7 @@ using Falck.Application.DTOs;
 
 namespace Falck.Application.Services;
 
-/// <summary>Authentication use cases: registration and login (section 3.1).</summary>
+/// <summary>Casos de uso de autenticación: registro e inicio de sesión (sección 3.1).</summary>
 public interface IAuthService
 {
     Task<AuthResponse> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default);

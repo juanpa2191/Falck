@@ -3,10 +3,10 @@ using System.ComponentModel.DataAnnotations;
 namespace Falck.Application.DTOs;
 
 /// <summary>
-/// Payload for POST /api/auth/register. Self-registration always creates a
-/// read-only User account; there is deliberately no client-supplied role, so
-/// an anonymous caller cannot grant itself Admin. Admin accounts are seeded
-/// (see DbSeeder) or would be promoted by an existing admin in production.
+/// Cuerpo de la petición POST /api/auth/register. El auto-registro siempre crea
+/// una cuenta User de solo lectura; deliberadamente no hay rol suministrado por
+/// el cliente, así que un llamante anónimo no puede otorgarse Admin. Las cuentas
+/// Admin se siembran (ver DbSeeder) o las promovería un admin existente en producción.
 /// </summary>
 public record RegisterRequest
 {
@@ -17,7 +17,7 @@ public record RegisterRequest
     public string Password { get; init; } = string.Empty;
 }
 
-/// <summary>Payload for POST /api/auth/login.</summary>
+/// <summary>Cuerpo de la petición POST /api/auth/login.</summary>
 public record LoginRequest
 {
     [Required]
@@ -27,5 +27,5 @@ public record LoginRequest
     public string Password { get; init; } = string.Empty;
 }
 
-/// <summary>Issued JWT plus the context the client needs to use it.</summary>
+/// <summary>El JWT emitido más el contexto que el cliente necesita para usarlo.</summary>
 public record AuthResponse(string Token, DateTime ExpiresAtUtc, string Username, string Role);

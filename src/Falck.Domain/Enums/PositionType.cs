@@ -1,9 +1,10 @@
 namespace Falck.Domain.Enums;
 
 /// <summary>
-/// Positions an employee can hold. Backed by <see cref="int"/> so it maps
-/// directly to the <c>CurrentPosition (int)</c> property required by the spec,
-/// while keeping the values type-safe and self-describing.
+/// Cargos que puede ocupar un empleado. Respaldado por <see cref="int"/> para
+/// que mapee directamente a la propiedad <c>CurrentPosition (int)</c> exigida
+/// por el enunciado, manteniendo los valores con seguridad de tipos y
+/// autodescriptivos.
 /// </summary>
 public enum PositionType
 {
@@ -16,14 +17,15 @@ public enum PositionType
 }
 
 /// <summary>
-/// Domain knowledge about positions, kept next to the enum so adding a new
-/// manager type only requires touching this file (Open/Closed at the edges).
+/// Conocimiento de dominio sobre los cargos, ubicado junto al enum para que
+/// agregar un nuevo tipo de gerente solo requiera tocar este archivo
+/// (Open/Closed en los bordes).
 /// </summary>
 public static class PositionTypeExtensions
 {
     /// <summary>
-    /// A position is managerial when it belongs to the manager band (>= 10).
-    /// There can be many types of managers; all of them share this rule.
+    /// Un cargo es gerencial cuando pertenece a la banda de gerentes (>= 10).
+    /// Puede haber muchos tipos de gerente; todos comparten esta regla.
     /// </summary>
     public static bool IsManagerial(this PositionType position) =>
         (int)position >= (int)PositionType.Manager;

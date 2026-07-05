@@ -1,8 +1,8 @@
 namespace Falck.Application.Common.Exceptions;
 
 /// <summary>
-/// Thrown when credentials are invalid. Translated to an HTTP 401 by the API
-/// middleware. The message is deliberately generic: never reveal whether the
-/// username or the password was wrong.
+/// Se lanza cuando las credenciales son inválidas. El middleware de la API la
+/// traduce a un HTTP 401. El mensaje es deliberadamente genérico: nunca revela si
+/// lo incorrecto fue el usuario o la contraseña.
 /// </summary>
 public class UnauthorizedException(string message) : Exception(message);

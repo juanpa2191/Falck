@@ -2,7 +2,7 @@ using Falck.Application.DTOs;
 
 namespace Falck.Application.Services;
 
-/// <summary>Application use cases for the employees entity.</summary>
+/// <summary>Casos de uso de aplicación para la entidad de empleados.</summary>
 public interface IEmployeeService
 {
     Task<List<EmployeeDto>> GetAllAsync(CancellationToken cancellationToken = default);
@@ -15,7 +15,7 @@ public interface IEmployeeService
 
     Task DeleteAsync(int id, CancellationToken cancellationToken = default);
 
-    /// <summary>Section 4.3: employees of a department with at least one project.</summary>
+    /// <summary>Sección 4.3: empleados de un departamento con al menos un proyecto.</summary>
     Task<List<EmployeeDto>> GetByDepartmentWithProjectsAsync(
         int departmentId, CancellationToken cancellationToken = default);
 }

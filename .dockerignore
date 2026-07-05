@@ -1,15 +1,15 @@
-# Build artifacts (rebuilt inside the image; never copy host binaries)
+# Artefactos de build (se reconstruyen dentro de la imagen; nunca copiar binarios del host)
 **/bin/
 **/obj/
 **/TestResults/
 
-# Local tooling / IDE
+# Herramientas locales / IDE
 .git/
 .gitignore
 .vs/
 .vscode/
 **/*.user
 
-# Docs and compose (not needed in the build context)
+# Documentación y compose (no se necesitan en el contexto de build)
 docs/
 *.md

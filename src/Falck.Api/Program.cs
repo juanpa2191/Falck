@@ -17,7 +17,7 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers()
-    // Positions travel as readable names ("Manager") while still accepting ints.
+    // Los cargos viajan como nombres legibles ("Manager") aceptando también ints.
     .AddJsonOptions(options =>
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
@@ -26,7 +26,7 @@ builder.Services.AddSwaggerGen(options =>
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFile));
 
-    // "Authorize" button: paste the raw JWT from /api/auth/login.
+    // Botón "Authorize": pega el JWT en crudo de /api/auth/login.
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -55,14 +55,14 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
-// JWT bearer authentication (section 3): tokens are validated against the
-// same settings used to issue them.
+// Autenticación JWT bearer (sección 3): los tokens se validan contra la misma
+// configuración usada para emitirlos.
 var jwtSettings = builder.Configuration.GetSection(JwtSettings.SectionName).Get<JwtSettings>()
     ?? throw new InvalidOperationException("Configuration section 'Jwt' is missing.");
 
-// Fail fast in Production if the signing key is missing, too short for
-// HMAC-SHA256 (< 256 bits), or still the committed development placeholder.
-// Supply a real key via user-secrets or environment variables (Jwt__Key).
+// Falla rápido en Producción si la clave de firma falta, es demasiado corta para
+// HMAC-SHA256 (< 256 bits), o sigue siendo el placeholder de desarrollo commiteado.
+// Suministra una clave real vía user-secrets o variables de entorno (Jwt__Key).
 if (builder.Environment.IsProduction() &&
     (jwtSettings.Key.Length < 32 || jwtSettings.Key.StartsWith("dev-only")))
 {
@@ -70,7 +70,7 @@ if (builder.Environment.IsProduction() &&
         "A production-grade 'Jwt:Key' must be provided via secrets or environment variables.");
 }
 
-// Throttle the anonymous auth endpoints to blunt brute-force and enumeration.
+// Limita la tasa de los endpoints anónimos de auth para frenar fuerza bruta y enumeración.
 builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
@@ -102,8 +102,8 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// Apply pending migrations and seed demo users on startup so the evaluator
-// can run the API without any manual database setup.
+// Aplica las migraciones pendientes y siembra los usuarios de demo al arrancar
+// para que el evaluador pueda ejecutar la API sin configurar la base de datos a mano.
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<FalckDbContext>();
@@ -113,9 +113,9 @@ using (var scope = app.Services.CreateScope())
     await DbSeeder.SeedAsync(dbContext, passwordHasher);
 }
 
-// Custom middleware, outermost first: logging wraps everything (so it records
-// the final status code and total time), then exception handling converts
-// errors from the rest of the pipeline into ProblemDetails.
+// Middleware personalizado, del más externo primero: el logging envuelve todo
+// (para registrar el código de estado final y el tiempo total), luego el manejo
+// de excepciones convierte los errores del resto del pipeline en ProblemDetails.
 app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 

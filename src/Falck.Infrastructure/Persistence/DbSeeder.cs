@@ -5,8 +5,9 @@ using Microsoft.EntityFrameworkCore;
 namespace Falck.Infrastructure.Persistence;
 
 /// <summary>
-/// Seeds runtime data that cannot go through HasData: BCrypt hashes differ on
-/// every run, so demo users are created here (idempotently) at startup.
+/// Siembra datos en tiempo de ejecución que no pueden ir por HasData: los hashes
+/// BCrypt difieren en cada ejecución, así que los usuarios de demo se crean aquí
+/// (de forma idempotente) al arrancar.
 /// </summary>
 public static class DbSeeder
 {

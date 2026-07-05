@@ -4,8 +4,8 @@ using Falck.Domain.Strategies;
 namespace Falck.Domain.Entities;
 
 /// <summary>
-/// An employee of the company. Tracks its current position plus the full
-/// history of positions held (see <see cref="PositionHistories"/>).
+/// Un empleado de la empresa. Registra su cargo actual más el historial
+/// completo de cargos ocupados (ver <see cref="PositionHistories"/>).
 /// </summary>
 public class Employee
 {
@@ -14,10 +14,10 @@ public class Employee
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
-    /// Current position. Modeled as <see cref="PositionType"/> (an int-backed
-    /// enum) to honor the "CurrentPosition (int)" requirement with type safety.
-    /// Use <see cref="ChangePosition"/> instead of setting it directly so the
-    /// position history stays consistent.
+    /// Cargo actual. Modelado como <see cref="PositionType"/> (un enum
+    /// respaldado por int) para honrar el requisito "CurrentPosition (int)" con
+    /// seguridad de tipos. Usa <see cref="ChangePosition"/> en vez de asignarlo
+    /// directamente para que el historial de cargos se mantenga consistente.
     /// </summary>
     public PositionType CurrentPosition { get; set; }
 
@@ -27,33 +27,35 @@ public class Employee
 
     public Department? Department { get; set; }
 
-    /// <summary>History of every position this employee has held.</summary>
+    /// <summary>Historial de todos los cargos que ha ocupado este empleado.</summary>
     public List<PositionHistory> PositionHistories { get; set; } = [];
 
-    /// <summary>Projects the employee is currently assigned to (many-to-many).</summary>
+    /// <summary>Proyectos a los que el empleado está asignado actualmente (muchos a muchos).</summary>
     public List<Project> Projects { get; set; } = [];
 
     /// <summary>
-    /// Optimistic-concurrency token (SQL Server rowversion). Lets concurrent
-    /// updates/deletes of the same employee fail cleanly instead of silently
-    /// producing a divergent position history or a lost update.
+    /// Token de concurrencia optimista (rowversion de SQL Server). Permite que
+    /// actualizaciones/eliminaciones concurrentes del mismo empleado fallen
+    /// limpiamente en vez de producir en silencio un historial de cargos
+    /// divergente o una actualización perdida.
     /// </summary>
     public byte[]? RowVersion { get; set; }
 
     /// <summary>
-    /// Calculates the yearly bonus based on the salary and the current
-    /// position: the factory picks the policy for the position (10% regular,
-    /// 20% for any type of manager) and the strategy applies it.
+    /// Calcula el bono anual con base en el salario y el cargo actual: la
+    /// factory elige la política del cargo (10% regular, 20% para cualquier
+    /// tipo de gerente) y la estrategia la aplica.
     /// </summary>
     public decimal CalculateYearlyBonus(IBonusStrategyFactory strategyFactory) =>
         strategyFactory.Create(CurrentPosition).CalculateYearlyBonus(Salary);
 
     /// <summary>
-    /// Moves the employee to a new position, closing the open history record
-    /// (if any) and opening a new one starting at <paramref name="effectiveDate"/>.
+    /// Mueve al empleado a un nuevo cargo, cerrando el registro de historial
+    /// abierto (si existe) y abriendo uno nuevo a partir de
+    /// <paramref name="effectiveDate"/>.
     /// </summary>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the employee already holds <paramref name="newPosition"/>.
+    /// Se lanza cuando el empleado ya ocupa <paramref name="newPosition"/>.
     /// </exception>
     public void ChangePosition(PositionType newPosition, DateTime effectiveDate)
     {

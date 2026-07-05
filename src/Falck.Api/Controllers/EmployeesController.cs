@@ -7,29 +7,30 @@ using Microsoft.AspNetCore.Mvc;
 namespace Falck.Api.Controllers;
 
 /// <summary>
-/// CRUD endpoints for the employees entity (technical test, section 2.1).
-/// Controllers stay thin: validation via model binding, logic in the service.
-/// Section 3.3 role protection: Admin has full access; User can only GET.
+/// Endpoints CRUD para la entidad de empleados (prueba técnica, sección 2.1).
+/// Los controladores se mantienen delgados: validación por model binding, lógica
+/// en el servicio. Protección por roles de la sección 3.3: Admin tiene acceso
+/// total; User solo puede hacer GET.
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [Authorize(Roles = $"{Roles.Admin},{Roles.User}")]
 public class EmployeesController(IEmployeeService employeeService) : ControllerBase
 {
-    /// <summary>Returns a list of all employees. Roles: Admin, User.</summary>
+    /// <summary>Devuelve la lista de todos los empleados. Roles: Admin, User.</summary>
     [HttpGet]
     [ProducesResponseType<List<EmployeeDto>>(StatusCodes.Status200OK)]
     public async Task<ActionResult<List<EmployeeDto>>> GetAll(CancellationToken cancellationToken) =>
         Ok(await employeeService.GetAllAsync(cancellationToken));
 
-    /// <summary>Returns details of a specific employee, including position history and projects. Roles: Admin, User.</summary>
+    /// <summary>Devuelve el detalle de un empleado específico, incluyendo historial de cargos y proyectos. Roles: Admin, User.</summary>
     [HttpGet("{id:int}")]
     [ProducesResponseType<EmployeeDetailDto>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<EmployeeDetailDto>> GetById(int id, CancellationToken cancellationToken) =>
         Ok(await employeeService.GetByIdAsync(id, cancellationToken));
 
-    /// <summary>Adds a new employee (opens its first position history record). Roles: Admin.</summary>
+    /// <summary>Agrega un nuevo empleado (abre su primer registro de historial de cargos). Roles: Admin.</summary>
     [HttpPost]
     [Authorize(Roles = Roles.Admin)]
     [ProducesResponseType<EmployeeDetailDto>(StatusCodes.Status201Created)]
@@ -42,8 +43,8 @@ public class EmployeesController(IEmployeeService employeeService) : ControllerB
     }
 
     /// <summary>
-    /// Updates an existing employee. A position change is recorded in the
-    /// position history automatically. Roles: Admin.
+    /// Actualiza un empleado existente. Un cambio de cargo se registra
+    /// automáticamente en el historial de cargos. Roles: Admin.
     /// </summary>
     [HttpPut("{id:int}")]
     [Authorize(Roles = Roles.Admin)]
@@ -57,7 +58,7 @@ public class EmployeesController(IEmployeeService employeeService) : ControllerB
         return NoContent();
     }
 
-    /// <summary>Deletes an employee (its position history goes with it). Roles: Admin.</summary>
+    /// <summary>Elimina un empleado (su historial de cargos se elimina con él). Roles: Admin.</summary>
     [HttpDelete("{id:int}")]
     [Authorize(Roles = Roles.Admin)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]

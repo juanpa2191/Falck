@@ -31,8 +31,8 @@ public class BCryptPasswordHasherTests
     [Fact]
     public void VerifyDecoy_AlwaysReturnsFalse_ButRunsToKeepConstantTime()
     {
-        // The decoy never matches any real password; its purpose is timing,
-        // not authentication.
+        // El señuelo nunca coincide con una contraseña real; su propósito es el
+        // tiempo (timing), no la autenticación.
         Assert.False(_hasher.VerifyDecoy("anything"));
         Assert.False(_hasher.VerifyDecoy(string.Empty));
     }

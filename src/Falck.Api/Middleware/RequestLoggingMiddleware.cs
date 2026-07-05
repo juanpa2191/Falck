@@ -3,13 +3,14 @@ using System.Diagnostics;
 namespace Falck.Api.Middleware;
 
 /// <summary>
-/// Custom middleware (technical test, section 2.3): logs every incoming HTTP
-/// request with method, path, caller, response status and elapsed time.
+/// Middleware personalizado (prueba técnica, sección 2.3): registra cada
+/// petición HTTP entrante con método, ruta, llamante, estado de respuesta y
+/// tiempo transcurrido.
 ///
-/// Middleware in ASP.NET Core is a pipeline of components; each one receives
-/// the <see cref="HttpContext"/>, may act before and after calling the next
-/// component, and may short-circuit the chain. This one wraps the rest of the
-/// pipeline in a stopwatch, so it must be registered early in Program.cs.
+/// El middleware en ASP.NET Core es una tubería de componentes; cada uno recibe
+/// el <see cref="HttpContext"/>, puede actuar antes y después de llamar al
+/// siguiente componente, y puede cortocircuitar la cadena. Este envuelve el resto
+/// del pipeline en un cronómetro, así que debe registrarse temprano en Program.cs.
 /// </summary>
 public class RequestLoggingMiddleware(
     RequestDelegate next,

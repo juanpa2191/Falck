@@ -40,7 +40,7 @@ public class JwtTokenGeneratorTests
 
         var (_, expiresAtUtc) = _generator.GenerateToken(new User { Id = 1, Username = "x", Role = Roles.User });
 
-        // ExpiryMinutes = 30, allow a small execution window.
+        // ExpiryMinutes = 30, se permite un pequeño margen de ejecución.
         Assert.InRange(expiresAtUtc, before.AddMinutes(29), before.AddMinutes(31));
     }
 

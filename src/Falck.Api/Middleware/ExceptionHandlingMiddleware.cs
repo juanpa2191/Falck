@@ -4,8 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace Falck.Api.Middleware;
 
 /// <summary>
-/// Global error handler: converts known application exceptions into RFC 7807
-/// ProblemDetails responses and shields callers from internal error details.
+/// Manejador global de errores: convierte las excepciones conocidas de la
+/// aplicación en respuestas ProblemDetails (RFC 7807) y protege a los llamantes
+/// de los detalles internos de error.
 /// </summary>
 public class ExceptionHandlingMiddleware(
     RequestDelegate next,
@@ -35,8 +36,8 @@ public class ExceptionHandlingMiddleware(
         }
         catch (OperationCanceledException) when (context.RequestAborted.IsCancellationRequested)
         {
-            // The client disconnected mid-request; this is expected, not an error.
-            // Nothing to write to a connection that is already gone.
+            // El cliente se desconectó a mitad de la petición; esto es esperado,
+            // no un error. No hay nada que escribir a una conexión que ya se fue.
             logger.LogInformation("Request {Method} {Path} was cancelled by the client.",
                 context.Request.Method, context.Request.Path);
         }

@@ -26,7 +26,7 @@ public class AuthServiceTests
         });
 
         Assert.Equal("token-for-ada", response.Token);
-        // Self-registration must never grant Admin, regardless of any input.
+        // El auto-registro nunca debe otorgar Admin, sin importar la entrada.
         Assert.Equal(Roles.User, response.Role);
         var stored = Assert.Single(_users.Users);
         Assert.Equal(Roles.User, stored.Role);

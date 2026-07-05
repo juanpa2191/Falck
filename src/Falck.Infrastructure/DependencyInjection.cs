@@ -9,8 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Falck.Infrastructure;
 
 /// <summary>
-/// Composition root for the infrastructure layer: the API only calls this
-/// method and never references EF Core or concrete repositories directly.
+/// Raíz de composición de la capa de infraestructura: la API solo llama a este
+/// método y nunca referencia EF Core ni los repositorios concretos directamente.
 /// </summary>
 public static class DependencyInjection
 {
@@ -22,9 +22,9 @@ public static class DependencyInjection
 
         services.AddDbContext<FalckDbContext>(options =>
             options.UseSqlServer(connectionString, sql =>
-                // Retry transient failures so the API survives SQL Server still
-                // warming up (e.g. the database container starting alongside it)
-                // and momentary connection drops.
+                // Reintenta fallos transitorios para que la API sobreviva a SQL
+                // Server aún calentando (p. ej. el contenedor de base de datos
+                // arrancando junto a ella) y a cortes momentáneos de conexión.
                 sql.EnableRetryOnFailure(
                     maxRetryCount: 5,
                     maxRetryDelay: TimeSpan.FromSeconds(10),

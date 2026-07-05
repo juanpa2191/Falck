@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Falck.Application;
 
-/// <summary>Composition root for the application layer.</summary>
+/// <summary>Raíz de composición de la capa de aplicación.</summary>
 public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
@@ -13,7 +13,7 @@ public static class DependencyInjection
         services.AddScoped<IDepartmentService, DepartmentService>();
         services.AddScoped<IAuthService, AuthService>();
 
-        // Stateless, so a single instance can serve every request.
+        // Sin estado, así que una sola instancia puede atender todas las peticiones.
         services.AddSingleton<IBonusStrategyFactory, BonusStrategyFactory>();
 
         return services;

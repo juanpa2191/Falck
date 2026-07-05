@@ -1,8 +1,8 @@
 name: CD
 
-# Build the Docker image and publish it to GitHub Container Registry (GHCR).
-# Runs when code lands on main, or when a version tag (v1.2.3) is pushed.
-# Can also be triggered manually from the Actions tab.
+# Construye la imagen Docker y la publica en GitHub Container Registry (GHCR).
+# Se ejecuta cuando llega código a main, o cuando se hace push de un tag de
+# versión (v1.2.3). También puede dispararse manualmente desde la pestaña Actions.
 on:
   push:
     branches: [main]
@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 env:
-  # ghcr.io/<owner>/<repo> — lowercased by the metadata action below.
+  # ghcr.io/<owner>/<repo> — la action de metadata de abajo lo pasa a minúsculas.
   IMAGE_NAME: ghcr.io/${{ github.repository }}
 
 jobs:
@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write        # required to push to GHCR with GITHUB_TOKEN
+      packages: write        # necesario para publicar en GHCR con GITHUB_TOKEN
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -33,7 +33,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Derive tags/labels: :latest for main, :sha-<short> always, :vX.Y.Z on tags.
+      # Deriva tags/labels: :latest para main, :sha-<corto> siempre, :vX.Y.Z en tags.
       - name: Extract metadata
         id: meta
         uses: docker/metadata-action@v6

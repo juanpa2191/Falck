@@ -1,6 +1,6 @@
 namespace Falck.Infrastructure.Authentication;
 
-/// <summary>Bound from the "Jwt" configuration section.</summary>
+/// <summary>Enlazado desde la sección de configuración "Jwt".</summary>
 public class JwtSettings
 {
     public const string SectionName = "Jwt";
@@ -10,9 +10,9 @@ public class JwtSettings
     public string Audience { get; set; } = string.Empty;
 
     /// <summary>
-    /// HMAC-SHA256 signing key (minimum 32 bytes). In production this must
-    /// come from a secret store (user-secrets, Key Vault, env vars), never
-    /// from a committed appsettings file.
+    /// Clave de firma HMAC-SHA256 (mínimo 32 bytes). En producción debe provenir
+    /// de un almacén de secretos (user-secrets, Key Vault, variables de entorno),
+    /// nunca de un archivo appsettings commiteado.
     /// </summary>
     public string Key { get; set; } = string.Empty;
 

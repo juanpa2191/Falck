@@ -1,13 +1,13 @@
 name: CI
 
-# Build and test on every push to main and on every pull request targeting it.
+# Compila y prueba en cada push a main y en cada pull request dirigido a main.
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
 
-# Cancel an in-progress run when a newer commit is pushed to the same ref.
+# Cancela una ejecución en curso cuando se hace push de un commit más nuevo al mismo ref.
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
@@ -24,8 +24,9 @@ jobs:
         with:
           dotnet-version: "9.0.x"
 
-      # Cache the NuGet package cache keyed on the project files so restores
-      # are fast and only re-download when a dependency actually changes.
+      # Cachea los paquetes NuGet usando los archivos de proyecto como clave para
+      # que las restauraciones sean rápidas y solo se re-descarguen cuando una
+      # dependencia realmente cambie.
       - name: Cache NuGet packages
         uses: actions/cache@v6
         with:
@@ -48,7 +49,7 @@ jobs:
           --collect:"XPlat Code Coverage"
           --settings coverlet.runsettings
 
-      # Keep the test results and coverage as build artifacts for inspection.
+      # Conserva los resultados de pruebas y la cobertura como artefactos para inspección.
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v7

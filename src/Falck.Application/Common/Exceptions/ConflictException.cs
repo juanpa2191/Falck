@@ -1,8 +1,9 @@
 namespace Falck.Application.Common.Exceptions;
 
 /// <summary>
-/// Thrown when a request conflicts with the current state of the resource
-/// (e.g. a concurrent update/delete, or a uniqueness violation lost to a race).
-/// Translated to an HTTP 409 by the API exception-handling middleware.
+/// Se lanza cuando una petición entra en conflicto con el estado actual del
+/// recurso (p. ej. una actualización/eliminación concurrente, o una violación de
+/// unicidad perdida por una condición de carrera). El middleware de manejo de
+/// excepciones de la API la traduce a un HTTP 409.
 /// </summary>
 public class ConflictException(string message) : Exception(message);

@@ -1,8 +1,8 @@
 namespace Falck.Domain.Strategies;
 
 /// <summary>
-/// Bonus policy shared by every managerial position (Manager, SeniorManager,
-/// Director, ...): 20% of the salary.
+/// Política de bono compartida por todos los cargos gerenciales (Manager,
+/// SeniorManager, Director, ...): 20% del salario.
 /// </summary>
 public class ManagerBonusStrategy : IBonusStrategy
 {

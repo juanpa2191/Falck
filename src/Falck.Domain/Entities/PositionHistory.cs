@@ -3,8 +3,8 @@ using Falck.Domain.Enums;
 namespace Falck.Domain.Entities;
 
 /// <summary>
-/// One period during which an employee held a given position. The record is
-/// "open" (current) while <see cref="EndDate"/> is null.
+/// Un período durante el cual un empleado ocupó un cargo dado. El registro está
+/// "abierto" (vigente) mientras <see cref="EndDate"/> sea null.
 /// </summary>
 public class PositionHistory
 {
@@ -15,18 +15,18 @@ public class PositionHistory
     public Employee? Employee { get; set; }
 
     /// <summary>
-    /// Position held during this period. Kept as string per the spec; the
-    /// value is the <see cref="PositionType"/> name so it stays consistent
-    /// with <see cref="Entities.Employee.CurrentPosition"/>.
+    /// Cargo ocupado durante este período. Se mantiene como string según el
+    /// enunciado; el valor es el nombre del <see cref="PositionType"/> para que
+    /// se mantenga consistente con <see cref="Entities.Employee.CurrentPosition"/>.
     /// </summary>
     public string Position { get; set; } = string.Empty;
 
     public DateTime StartDate { get; set; }
 
-    /// <summary>Null while this is the employee's current position.</summary>
+    /// <summary>Null mientras este sea el cargo actual del empleado.</summary>
     public DateTime? EndDate { get; set; }
 
-    /// <summary>Creates an open (current) history record.</summary>
+    /// <summary>Crea un registro de historial abierto (vigente).</summary>
     public static PositionHistory Open(int employeeId, PositionType position, DateTime startDate) =>
         new()
         {
@@ -35,9 +35,9 @@ public class PositionHistory
             StartDate = startDate
         };
 
-    /// <summary>Closes the record when the employee leaves the position.</summary>
+    /// <summary>Cierra el registro cuando el empleado deja el cargo.</summary>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="endDate"/> is earlier than <see cref="StartDate"/>.
+    /// Se lanza cuando <paramref name="endDate"/> es anterior a <see cref="StartDate"/>.
     /// </exception>
     public void Close(DateTime endDate)
     {

@@ -2,7 +2,7 @@ using Falck.Application.DTOs;
 
 namespace Falck.Application.Services;
 
-/// <summary>Read-side use cases for departments.</summary>
+/// <summary>Casos de uso de solo lectura para departamentos.</summary>
 public interface IDepartmentService
 {
     Task<List<DepartmentDto>> GetAllAsync(CancellationToken cancellationToken = default);

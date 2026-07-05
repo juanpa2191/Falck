@@ -4,8 +4,9 @@ using Falck.Domain.Entities;
 namespace Falck.Application.Mappings;
 
 /// <summary>
-/// Manual entity-to-DTO mapping. Deliberately explicit instead of AutoMapper:
-/// the surface is small and the mapping stays compile-time safe.
+/// Mapeo manual de entidad a DTO. Deliberadamente explícito en lugar de
+/// AutoMapper: la superficie es pequeña y el mapeo se mantiene seguro en tiempo
+/// de compilación.
 /// </summary>
 public static class EmployeeMapper
 {

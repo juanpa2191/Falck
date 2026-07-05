@@ -1,8 +1,8 @@
-# Runs the API together with a SQL Server container. The app targets SQL Server
-# LocalDB by default (Windows); in containers the connection string is overridden
-# here to point at the "db" service. Start everything with:
+# Ejecuta la API junto a un contenedor de SQL Server. La app apunta a SQL Server
+# LocalDB por defecto (Windows); en contenedores la cadena de conexión se
+# sobrescribe aquí para apuntar al servicio "db". Levanta todo con:
 #   docker compose up --build
-# then open http://localhost:8080/swagger
+# y luego abre http://localhost:8080/swagger
 services:
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -14,7 +14,7 @@ services:
     volumes:
       - mssql-data:/var/opt/mssql
     healthcheck:
-      # API waits for this to pass before starting (see depends_on below).
+      # La API espera a que esto pase antes de arrancar (ver depends_on abajo).
       test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$${MSSQL_SA_PASSWORD}\" -C -Q \"SELECT 1\" -b || exit 1"]
       interval: 10s
       timeout: 5s
@@ -27,11 +27,11 @@ services:
       db:
         condition: service_healthy
     environment:
-      ASPNETCORE_ENVIRONMENT: "Development"      # enables Swagger for the reviewer
+      ASPNETCORE_ENVIRONMENT: "Development"      # habilita Swagger para el evaluador
       ASPNETCORE_URLS: "http://+:8080"
-      # Overrides ConnectionStrings:DefaultConnection from appsettings.json.
+      # Sobrescribe ConnectionStrings:DefaultConnection de appsettings.json.
       ConnectionStrings__DefaultConnection: "Server=db,1433;Database=FalckEmployeesDb;User Id=sa;Password=Your_strong_Pass123;TrustServerCertificate=True"
-      # Overrides Jwt:Key; supply a real secret here in any real deployment.
+      # Sobrescribe Jwt:Key; en cualquier despliegue real, suministra aquí un secreto real.
       Jwt__Key: "docker-compose-dev-signing-key-0123456789ABCDEF0123456789ABCDEF"
     ports:
       - "8080:8080"

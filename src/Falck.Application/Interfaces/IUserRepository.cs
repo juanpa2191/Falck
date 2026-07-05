@@ -2,7 +2,7 @@ using Falck.Domain.Entities;
 
 namespace Falck.Application.Interfaces;
 
-/// <summary>Persistence contract for API user accounts.</summary>
+/// <summary>Contrato de persistencia para las cuentas de usuario de la API.</summary>
 public interface IUserRepository
 {
     Task<User?> GetByUsernameAsync(string username, CancellationToken cancellationToken = default);

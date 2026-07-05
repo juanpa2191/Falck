@@ -38,9 +38,9 @@ public class EmployeeRepository(FalckDbContext context) : IEmployeeRepository
         return SaveGuardingConcurrencyAsync(cancellationToken);
     }
 
-    // Section 4.3: employees of a department assigned to at least one project.
-    // No Include(Projects): the DTO doesn't expose them and the filter already
-    // runs as an EXISTS subquery, so loading the join rows would be wasted I/O.
+    // Sección 4.3: empleados de un departamento asignados a al menos un proyecto.
+    // Sin Include(Projects): el DTO no los expone y el filtro ya se ejecuta como
+    // una subconsulta EXISTS, así que cargar las filas del join sería I/O desperdiciado.
     public Task<List<Employee>> GetByDepartmentWithProjectsAsync(
         int departmentId, CancellationToken cancellationToken = default) =>
         context.Employees
@@ -50,9 +50,10 @@ public class EmployeeRepository(FalckDbContext context) : IEmployeeRepository
             .OrderBy(e => e.Id)
             .ToListAsync(cancellationToken);
 
-    // Optimistic-concurrency guard: RowVersion lets a concurrent update/delete
-    // of the same employee fail cleanly (409) instead of corrupting the
-    // position history with two open records or throwing a raw 500.
+    // Guarda de concurrencia optimista: RowVersion permite que una
+    // actualización/eliminación concurrente del mismo empleado falle limpiamente
+    // (409) en lugar de corromper el historial de cargos con dos registros
+    // abiertos o arrojar un 500 crudo.
     private async Task SaveGuardingConcurrencyAsync(CancellationToken cancellationToken)
     {
         try
@@ -62,7 +63,7 @@ public class EmployeeRepository(FalckDbContext context) : IEmployeeRepository
         catch (DbUpdateConcurrencyException)
         {
             throw new ConflictException(
-                "The employee was modified or removed by another request. Please retry.");
+                "El empleado fue modificado o eliminado por otra petición. Por favor reintenta.");
         }
     }
 }

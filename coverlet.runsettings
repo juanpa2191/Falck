@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Coverage settings for "dotnet test" with the XPlat Code Coverage collector.
-  Excludes EF Core generated migrations so the reported number reflects
-  hand-written code only.
+  Configuración de cobertura para "dotnet test" con el colector XPlat Code Coverage.
+  Excluye las migraciones generadas por EF Core para que el número reportado
+  refleje únicamente el código escrito a mano.
 -->
 <RunSettings>
   <DataCollectionRunSettings>

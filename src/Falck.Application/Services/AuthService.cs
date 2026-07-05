@@ -21,7 +21,7 @@ public class AuthService(
         {
             Username = request.Username,
             PasswordHash = passwordHasher.Hash(request.Password),
-            // Self-registration is always a read-only account; never client-driven.
+            // El auto-registro siempre es una cuenta de solo lectura; nunca lo define el cliente.
             Role = Roles.User
         };
 
@@ -37,13 +37,13 @@ public class AuthService(
 
         if (user is null)
         {
-            // Run a decoy hash comparison so response time does not reveal
-            // whether the username exists (mitigates user enumeration).
+            // Ejecuta una comparación de hash señuelo para que el tiempo de
+            // respuesta no revele si el usuario existe (mitiga la enumeración de usuarios).
             passwordHasher.VerifyDecoy(request.Password);
             throw new UnauthorizedException("Invalid username or password.");
         }
 
-        // Same generic error either way: don't leak which credential failed.
+        // Mismo error genérico en ambos casos: no revelar qué credencial falló.
         if (!passwordHasher.Verify(request.Password, user.PasswordHash))
             throw new UnauthorizedException("Invalid username or password.");
 

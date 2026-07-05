@@ -27,8 +27,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired()
             .HasMaxLength(20);
 
-        // Users are seeded at startup by DbSeeder (not HasData): BCrypt
-        // produces a different hash per run, which would generate a model
-        // diff on every migration.
+        // Los usuarios se siembran al arrancar mediante DbSeeder (no HasData):
+        // BCrypt produce un hash distinto por ejecución, lo que generaría una
+        // diferencia de modelo en cada migración.
     }
 }

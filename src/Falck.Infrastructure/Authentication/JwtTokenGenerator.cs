@@ -22,7 +22,7 @@ public class JwtTokenGenerator(IOptions<JwtSettings> options) : IJwtTokenGenerat
             new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new(JwtRegisteredClaimNames.UniqueName, user.Username),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            // Drives [Authorize(Roles = ...)] on the controllers.
+            // Alimenta [Authorize(Roles = ...)] en los controladores.
             new(ClaimTypes.Role, user.Role)
         };
 

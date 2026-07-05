@@ -1,8 +1,8 @@
 namespace Falck.Application.Interfaces;
 
 /// <summary>
-/// Hashing contract so the application layer never depends on a concrete
-/// algorithm (BCrypt lives in Infrastructure).
+/// Contrato de hashing para que la capa de aplicación nunca dependa de un
+/// algoritmo concreto (BCrypt vive en Infrastructure).
 /// </summary>
 public interface IPasswordHasher
 {
@@ -11,9 +11,10 @@ public interface IPasswordHasher
     bool Verify(string password, string passwordHash);
 
     /// <summary>
-    /// Verifies the password against a fixed decoy hash. Used on the
-    /// unknown-username login path to keep response time constant and avoid
-    /// leaking which accounts exist. The boolean result is intentionally ignored.
+    /// Verifica la contraseña contra un hash señuelo fijo. Se usa en el flujo de
+    /// login con usuario desconocido para mantener el tiempo de respuesta
+    /// constante y evitar revelar qué cuentas existen. El resultado booleano se
+    /// ignora intencionalmente.
     /// </summary>
     bool VerifyDecoy(string password);
 }

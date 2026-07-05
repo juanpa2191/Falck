@@ -91,7 +91,7 @@ public class EmployeeServiceTests
         var record = Assert.Single(stored.PositionHistories);
         Assert.Equal(nameof(PositionType.Analyst), record.Position);
         Assert.Null(record.EndDate);
-        Assert.Equal(400m, result.YearlyBonus); // 10% of 4000
+        Assert.Equal(400m, result.YearlyBonus); // 10% de 4000
     }
 
     [Fact]
@@ -185,7 +185,7 @@ public class EmployeeServiceTests
         await Assert.ThrowsAsync<NotFoundException>(() => _service.DeleteAsync(999));
     }
 
-    // ---- Section 4.3 ----
+    // ---- Sección 4.3 ----
 
     [Fact]
     public async Task GetByDepartmentWithProjectsAsync_UnknownDepartment_ThrowsNotFound()

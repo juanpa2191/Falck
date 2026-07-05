@@ -3,13 +3,14 @@ using Falck.Application.Interfaces;
 namespace Falck.Infrastructure.Authentication;
 
 /// <summary>
-/// BCrypt implementation: salted, adaptive work factor, industry standard for
-/// password storage.
+/// Implementación con BCrypt: con salt, factor de trabajo adaptativo, estándar
+/// de la industria para el almacenamiento de contraseñas.
 /// </summary>
 public class BCryptPasswordHasher : IPasswordHasher
 {
-    // Computed once at type load; verifying against it costs the same as a real
-    // verification, keeping the unknown-username login path constant-time.
+    // Se calcula una vez al cargar el tipo; verificar contra él cuesta lo mismo
+    // que una verificación real, manteniendo constante el tiempo del flujo de
+    // login con usuario desconocido.
     private static readonly string DecoyHash =
         BCrypt.Net.BCrypt.HashPassword("decoy-account-never-authenticates");
 

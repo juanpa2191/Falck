@@ -1,7 +1,7 @@
 namespace Falck.Application.Common.Exceptions;
 
 /// <summary>
-/// Thrown when a request is semantically invalid (e.g. references a
-/// non-existent department). Translated to an HTTP 400 by the API middleware.
+/// Se lanza cuando una petición es semánticamente inválida (p. ej. referencia un
+/// departamento inexistente). El middleware de la API la traduce a un HTTP 400.
 /// </summary>
 public class BadRequestException(string message) : Exception(message);

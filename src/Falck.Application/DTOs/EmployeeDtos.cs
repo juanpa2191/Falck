@@ -3,7 +3,7 @@ using Falck.Domain.Enums;
 
 namespace Falck.Application.DTOs;
 
-/// <summary>Employee as exposed by list endpoints. Entities never leave the API.</summary>
+/// <summary>Empleado tal como lo exponen los endpoints de listado. Las entidades nunca salen de la API.</summary>
 public record EmployeeDto(
     int Id,
     string Name,
@@ -13,7 +13,7 @@ public record EmployeeDto(
     int DepartmentId,
     string? DepartmentName);
 
-/// <summary>Employee detail: adds position history and project assignments.</summary>
+/// <summary>Detalle del empleado: agrega historial de cargos y asignaciones de proyectos.</summary>
 public record EmployeeDetailDto(
     int Id,
     string Name,
@@ -31,13 +31,13 @@ public record ProjectDto(int Id, string Name);
 
 public record DepartmentDto(int Id, string Name);
 
-/// <summary>Payload for POST /api/employees.</summary>
+/// <summary>Cuerpo de la petición POST /api/employees.</summary>
 public record CreateEmployeeRequest
 {
     [Required, StringLength(100)]
     public string Name { get; init; } = string.Empty;
 
-    /// <summary>Accepts the enum name ("Manager") or its numeric value (10).</summary>
+    /// <summary>Acepta el nombre del enum ("Manager") o su valor numérico (10).</summary>
     [EnumDataType(typeof(PositionType))]
     public PositionType CurrentPosition { get; init; }
 
@@ -49,10 +49,11 @@ public record CreateEmployeeRequest
 }
 
 /// <summary>
-/// Payload for PUT /api/employees/{id}. Kept as a standalone record (parallel to
-/// <see cref="CreateEmployeeRequest"/>) so the two request bodies can evolve
-/// independently. Changing <see cref="CurrentPosition"/> automatically records
-/// the change in the employee's position history.
+/// Cuerpo de la petición PUT /api/employees/{id}. Se mantiene como un record
+/// independiente (paralelo a <see cref="CreateEmployeeRequest"/>) para que los
+/// dos cuerpos de petición puedan evolucionar por separado. Cambiar
+/// <see cref="CurrentPosition"/> registra automáticamente el cambio en el
+/// historial de cargos del empleado.
 /// </summary>
 public record UpdateEmployeeRequest
 {

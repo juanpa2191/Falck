@@ -25,8 +25,8 @@ public class UserRepository(FalckDbContext context) : IUserRepository
         }
         catch (DbUpdateException)
         {
-            // Two concurrent registrations for the same username can both pass
-            // the prior existence check; the unique index then rejects the loser.
+            // Dos registros concurrentes con el mismo usuario pueden pasar ambos
+            // la verificación previa de existencia; el índice único rechaza entonces al perdedor.
             throw new ConflictException($"Username '{user.Username}' is already taken.");
         }
 
