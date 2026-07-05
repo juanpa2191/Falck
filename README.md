@@ -46,10 +46,35 @@ Login via `POST /api/auth/login`, copy the `token` from the response and use
 the **Authorize** button in Swagger (or an `Authorization: Bearer <token>`
 header). `src/Falck.Api/Falck.Api.http` contains ready-made sample requests.
 
+### Run with Docker (no local SQL Server needed)
+
+The `dotnet run` path above targets SQL Server **LocalDB** (Windows only). To run
+anywhere, use Docker Compose, which starts a Linux SQL Server container plus the
+API and wires them together:
+
+```bash
+docker compose up --build
+```
+
+Then open **http://localhost:8080/swagger**. Compose overrides the connection
+string to point at the `db` service and waits (healthcheck) until SQL Server is
+ready; the API then applies the migrations and seeds the same demo data. Stop
+with `docker compose down` (add `-v` to also drop the database volume).
+
+The `Dockerfile` is a multi-stage build (SDK to publish, ASP.NET runtime to run)
+and `Jwt__Key` / connection string are supplied as environment variables — the
+same override mechanism a real deployment would use for secrets.
+
 ### Tests
 
 ```bash
 dotnet test
+```
+
+Coverage (hand-written code, excluding generated migrations):
+
+```bash
+dotnet test --settings coverlet.runsettings --collect:"XPlat Code Coverage"
 ```
 
 ## Endpoints

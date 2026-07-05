@@ -1,0 +1,15 @@
+# Build artifacts (rebuilt inside the image; never copy host binaries)
+**/bin/
+**/obj/
+**/TestResults/
+
+# Local tooling / IDE
+.git/
+.gitignore
+.vs/
+.vscode/
+**/*.user
+
+# Docs and compose (not needed in the build context)
+docs/
+*.md
